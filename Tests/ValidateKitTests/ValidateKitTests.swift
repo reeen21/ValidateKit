@@ -100,6 +100,27 @@ import Testing
     #expect(validation.validate("abc-123").isValid == false)
 }
 
+@Test func testMatchesValidation() {
+    let validation = Validation<String>
+        .required()
+        .matches(#"^\d{4}-\d{2}-\d{2}$"#, message: "Must be in YYYY-MM-DD format")
+    
+    #expect(validation.validate("2024-01-15").isValid == true)
+    #expect(validation.validate("2024/01/15").isValid == false)
+    #expect(validation.validate("24-01-15").isValid == false)
+    #expect(validation.validate("invalid").isValid == false)
+}
+
+@Test func testMatchesWithInvalidPattern() {
+    // Invalid regex pattern should fail validation
+    let validation = Validation<String>
+        .required()
+        .matches("[invalid", message: "Invalid format")
+    
+    // Even with invalid pattern, validation should fail gracefully
+    #expect(validation.validate("test").isValid == false)
+}
+
 @Test func testCustomValidation() {
     let validation = Validation<String>.custom { value in
         value.count % 2 == 0 ? .valid : .invalid("Length must be even")
@@ -118,6 +139,18 @@ import Testing
     #expect(combined.validate("").isValid == false)
     #expect(combined.validate("abc").isValid == false)
     #expect(combined.validate("abcde").isValid == true)
+}
+
+@Test func testOrCombination() {
+    let emailValidation = Validation<String>.email(message: "Invalid email")
+    let phoneValidation = Validation<String>.phoneNumber(message: "Invalid phone")
+    
+    let combined = emailValidation.or(phoneValidation)
+    
+    #expect(combined.validate("test@example.com").isValid == true)
+    #expect(combined.validate("123-456-7890").isValid == true)
+    #expect(combined.validate("invalid").isValid == false)
+    #expect(combined.validate("").isValid == false)
 }
 
 @Test func testWhenConditionalValidation() {
