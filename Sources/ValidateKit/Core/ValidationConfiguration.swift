@@ -25,29 +25,34 @@ public enum ValidationMode {
     
     /// Manual validation only.
     ///
-    /// Validation must be triggered manually. Use this mode when you need full control
-    /// over when validation occurs.
+    /// Validation must be triggered manually using `validateManually()` method.
+    /// Use this mode when you need full control over when validation occurs.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// struct MyForm: View {
+    ///     @State private var email = ""
+    ///     @State private var emailField: ValidatedTextField?
+    ///
+    ///     var body: some View {
+    ///         ValidatedTextField(
+    ///             "Email",
+    ///             text: $email,
+    ///             validation: .email().required(),
+    ///             validationMode: .manual
+    ///         )
+    ///         .onAppear {
+    ///             // Store reference if needed
+    ///         }
+    ///
+    ///         Button("Validate") {
+    ///             // Trigger validation manually
+    ///         }
+    ///     }
+    /// }
+    /// ```
     case manual
-}
-
-/// Defines how error messages should be displayed.
-///
-/// Use this enum to customize the visual presentation of validation errors.
-public enum ErrorStyle {
-    /// Default inline error display.
-    ///
-    /// Errors are displayed as text below, above, or beside the field based on `ErrorPosition`.
-    case `default`
-    
-    /// Display errors in a tooltip/popover.
-    ///
-    /// Errors appear in a tooltip when the user hovers over or focuses on the field.
-    case tooltip
-    
-    /// Display errors in an alert dialog.
-    ///
-    /// Errors appear in a modal alert dialog. Use sparingly as it interrupts user flow.
-    case alert
 }
 
 /// Defines where error messages should be positioned relative to the field.
@@ -82,7 +87,6 @@ public enum ErrorPosition {
 /// FormValidationConfiguration.shared.defaultValidationMode = .onBlur
 /// FormValidationConfiguration.shared.defaultDebounceInterval = 0.5
 /// FormValidationConfiguration.shared.errorMessagePosition = .below
-/// FormValidationConfiguration.shared.accessibilityErrorAnnouncement = true
 /// ```
 @Observable
 @MainActor
@@ -91,12 +95,6 @@ public final class FormValidationConfiguration {
     ///
     /// Modify properties on this instance to change global validation defaults.
     public static let shared = FormValidationConfiguration()
-    
-    /// The default error message display style.
-    ///
-    /// This value is used when `errorStyle` is not explicitly provided to `ValidatedTextField`
-    /// or `ValidatedSecureField`. Defaults to `.default`.
-    public var errorMessageStyle: ErrorStyle = .default
     
     /// The default error message position.
     ///
@@ -117,14 +115,6 @@ public final class FormValidationConfiguration {
     ///
     /// The debounce interval only applies when `validationMode` is `.onChange`.
     public var defaultDebounceInterval: TimeInterval = 0.3
-    
-    /// Whether to automatically announce validation errors via VoiceOver.
-    ///
-    /// When `true`, validation errors are automatically announced to VoiceOver users.
-    /// This improves accessibility for users with visual impairments.
-    ///
-    /// Defaults to `true`.
-    public var accessibilityErrorAnnouncement: Bool = true
     
     private init() {}
 }

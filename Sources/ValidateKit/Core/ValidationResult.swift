@@ -27,23 +27,19 @@ public enum ValidationResult {
     ///
     /// - Returns: `true` for `.valid`, `false` for `.invalid(_)`.
     public var isValid: Bool {
-        switch self {
-        case .valid:
+        if case .valid = self {
             return true
-        case .invalid:
-            return false
         }
+        return false
     }
     
     /// Returns the error message if validation failed, `nil` otherwise.
     ///
     /// - Returns: The error message string for `.invalid(_)`, `nil` for `.valid`.
     public var errorMessage: String? {
-        switch self {
-        case .valid:
-            return nil
-        case .invalid(let message):
+        if case .invalid(let message) = self {
             return message
         }
+        return nil
     }
 }

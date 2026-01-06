@@ -2,20 +2,6 @@ import Foundation
 
 // MARK: - String Validation Rules
 extension Validation where Value == String {
-    /// Email format validation (available as a property).
-    ///
-    /// Use this property for a concise syntax when chaining validations.
-    ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// let validation = Validation<String>.email
-    ///     .required("Email is required")
-    /// ```
-    public static var email: Validation<String> {
-        .email()
-    }
-    
     /// Validates that a string matches a valid email address format.
     ///
     /// Uses a standard email regex pattern to validate the format.
@@ -30,27 +16,25 @@ extension Validation where Value == String {
     /// let result = validation.validate("test@example.com") // Returns .valid
     /// ```
     public static func email(message: String = "Invalid email format") -> Validation<String> {
-        Validation { value in
-            let emailRegex = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
-            let regex = try? NSRegularExpression(pattern: emailRegex)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil ? .valid : .invalid(message)
-        }
+        ValidationRule.email(message: message)
     }
     
-    /// URL format validation (available as a property).
+    /// Validates that a string matches a valid email address format.
     ///
-    /// Use this property for a concise syntax when chaining validations.
+    /// This instance method allows chaining from other validation methods.
+    /// Uses a standard email regex pattern to validate the format.
+    ///
+    /// - Parameter message: The error message to display if validation fails. Defaults to "Invalid email format".
+    /// - Returns: A validation rule that checks for email format.
     ///
     /// ## Example Usage
     ///
     /// ```swift
-    /// let validation = Validation<String>.url
-    ///     .required("URL is required")
+    /// let validation = Validation<String>.email()
+    ///     .required("Email is required")
     /// ```
-    public static var url: Validation<String> {
-        .url()
+    public func email(message: String = "Invalid email format") -> Validation<String> {
+        self.and(ValidationRule.email(message: message))
     }
     
     /// Validates that a string is a valid URL.
@@ -67,21 +51,7 @@ extension Validation where Value == String {
     /// let result = validation.validate("https://example.com") // Returns .valid
     /// ```
     public static func url(message: String = "Invalid URL format") -> Validation<String> {
-        Validation { value in
-            guard let url = URL(string: value),
-                  url.scheme != nil,
-                  url.host != nil else {
-                return .invalid(message)
-            }
-            return .valid
-        }
-    }
-    
-    /// Phone number format validation (available as a property).
-    ///
-    /// Use this property for a concise syntax when chaining validations.
-    public static var phoneNumber: Validation<String> {
-        .phoneNumber()
+        ValidationRule.url(message: message)
     }
     
     /// Validates that a string matches a basic phone number format.
@@ -99,20 +69,7 @@ extension Validation where Value == String {
     /// let result = validation.validate("123-456-7890") // Returns .valid
     /// ```
     public static func phoneNumber(message: String = "Invalid phone number") -> Validation<String> {
-        Validation { value in
-            let phoneRegex = #"^[\d\s\-\(\)\+]+$"#
-            let regex = try? NSRegularExpression(pattern: phoneRegex)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil && value.count >= 10 ? .valid : .invalid(message)
-        }
-    }
-    
-    /// Username format validation (available as a property).
-    ///
-    /// Use this property for a concise syntax when chaining validations.
-    public static var username: Validation<String> {
-        .username()
+        ValidationRule.phoneNumber(message: message)
     }
     
     /// Validates that a string contains only alphanumeric characters and underscores.
@@ -129,13 +86,7 @@ extension Validation where Value == String {
     /// let result = validation.validate("user_name123") // Returns .valid
     /// ```
     public static func username(message: String = "Username can only contain letters, numbers, and underscores") -> Validation<String> {
-        Validation { value in
-            let usernameRegex = #"^[a-zA-Z0-9_]+$"#
-            let regex = try? NSRegularExpression(pattern: usernameRegex)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil ? .valid : .invalid(message)
-        }
+        ValidationRule.username(message: message)
     }
     
     /// Validates that a string contains only alphanumeric characters (letters and numbers).
@@ -163,33 +114,34 @@ extension Validation where Value == String {
         })
     }
     
-    /// Password validation (available as a property).
-    ///
-    /// Use this property as a starting point for password validation chains.
-    ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// let validation = Validation<String>.password
-    ///     .required("Password is required")
-    ///     .minLength(8, message: "Password must be at least 8 characters")
-    ///     .containsUppercase("Password must contain an uppercase letter")
-    /// ```
-    public static var password: Validation<String> {
-        .password()
-    }
-    
     /// Creates a base password validation rule.
     ///
     /// This is a placeholder that always passes. Use it as a starting point
     /// for chaining password-specific validation rules.
     ///
-    /// - Parameter message: Unused, but kept for API consistency. Defaults to "Invalid password format".
     /// - Returns: A validation rule that always passes (use with chained password rules).
-    public static func password(message: String = "Invalid password format") -> Validation<String> {
-        Validation { _ in
-            .valid
-        }
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// // Using type inference
+    /// ValidatedTextField(
+    ///     "Password",
+    ///     text: $password,
+    ///     validation: .password()
+    ///         .required("Password is required")
+    ///         .minLength(8, message: "Password must be at least 8 characters")
+    ///         .containsUppercase("Password must contain an uppercase letter")
+    /// )
+    ///
+    /// // Or explicitly
+    /// let validation = Validation<String>.password()
+    ///     .required("Password is required")
+    ///     .minLength(8, message: "Password must be at least 8 characters")
+    ///     .containsUppercase("Password must contain an uppercase letter")
+    /// ```
+    public static func password() -> Validation<String> {
+        ValidationRule.password()
     }
     
     /// Validates that a string contains at least one uppercase letter.

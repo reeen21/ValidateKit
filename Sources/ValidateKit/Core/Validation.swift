@@ -8,17 +8,25 @@ import Foundation
 /// ## Example Usage
 ///
 /// ```swift
-/// // Simple validation
-/// let emailValidation = Validation<String>.email()
+/// // Simple validation with explicit namespace
+/// let emailValidation = ValidationRule.email()
+///
+/// // Using type inference in ValidatedTextField (no prefix needed)
+/// ValidatedTextField(
+///     "Email",
+///     text: $email,
+///     validation: .email()
+///         .required("Email is required")
+/// )
 ///
 /// // Chained validations
-/// let passwordValidation = Validation<String>
+/// let passwordValidation = ValidationRule.password()
 ///     .required("Password is required")
 ///     .minLength(8, message: "Password must be at least 8 characters")
 ///     .containsUppercase("Password must contain an uppercase letter")
 ///
 /// // Custom validation
-/// let customValidation = Validation<String>.custom { value in
+/// let customValidation = ValidationRule.custom { value in
 ///     value.count % 2 == 0 ? .valid : .invalid("Length must be even")
 /// }
 /// ```
@@ -145,11 +153,24 @@ extension Validation where Value == String {
     /// let result = validation.validate("") // Returns .invalid("Email is required")
     /// ```
     public static func required(message: String = "This field is required") -> Validation<String> {
-        Validation { value in
-            value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                ? .invalid(message)
-                : .valid
-        }
+        ValidationRule.required(message: message)
+    }
+    
+    /// Validates that a string is not empty (after trimming whitespace).
+    ///
+    /// This instance method allows chaining from other validation methods.
+    ///
+    /// - Parameter message: The error message to display if validation fails. Defaults to "This field is required".
+    /// - Returns: A validation rule that checks for required input.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = Validation<String>.email()
+    ///     .required("Email is required")
+    /// ```
+    public func required(message: String = "This field is required") -> Validation<String> {
+        self.and(ValidationRule.required(message: message))
     }
     
     /// Validates that a string has a minimum length.
@@ -197,6 +218,7 @@ extension Validation where Value == String {
     /// Validates that a string matches a regular expression pattern.
     ///
     /// This method chains with existing validations using AND logic.
+    /// Use this method to validate custom patterns that are not covered by built-in validators.
     ///
     /// - Parameters:
     ///   - pattern: A regular expression pattern to match against.
@@ -206,10 +228,26 @@ extension Validation where Value == String {
     /// ## Example Usage
     ///
     /// ```swift
+    /// // Date format validation
     /// let validation = Validation<String>
     ///     .required()
     ///     .matches(#"^\d{4}-\d{2}-\d{2}$"#, message: "Must be in YYYY-MM-DD format")
+    ///
+    /// // Custom email validation with different pattern
+    /// let customEmailValidation = Validation<String>
+    ///     .required()
+    ///     .matches(#"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"#, message: "Invalid email format")
+    ///
+    /// // Japanese postal code validation
+    /// let postalCodeValidation = Validation<String>
+    ///     .required()
+    ///     .matches(#"^\d{3}-\d{4}$"#, message: "Must be in format: 123-4567")
     /// ```
+    ///
+    /// ## Note
+    ///
+    /// If the provided regular expression pattern is invalid, the validation will fail
+    /// and return the error message. Ensure that the pattern is a valid regular expression.
     public func matches(_ pattern: String, message: String) -> Validation<String> {
         self.and(Validation { value in
             let regex = try? NSRegularExpression(pattern: pattern)
@@ -232,7 +270,27 @@ extension Validation where Value == String {
     /// }
     /// ```
     public static func custom(_ validator: @escaping Validator) -> Validation<String> {
-        Validation(validator)
+        ValidationRule.custom(validator)
+    }
+    
+    /// Adds a custom validation rule with a custom validator closure.
+    ///
+    /// This instance method allows chaining from other validation methods.
+    ///
+    /// - Parameter validator: A closure that takes a string value and returns a `ValidationResult`.
+    /// - Returns: A validation rule using the custom validator.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let password = "password123"
+    /// let validation = Validation<String>.required(message: "Password is required")
+    ///     .custom { [password] confirm in
+    ///         confirm == password ? .valid : .invalid("Passwords do not match")
+    ///     }
+    /// ```
+    public func custom(_ validator: @escaping Validator) -> Validation<String> {
+        self.and(ValidationRule.custom(validator))
     }
 }
 

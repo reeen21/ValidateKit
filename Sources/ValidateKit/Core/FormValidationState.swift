@@ -34,6 +34,7 @@ import Observation
 @Observable
 @MainActor
 public final class FormValidationState {
+    public init() {}
     /// A dictionary mapping field identifiers to their error messages.
     ///
     /// Keys are field identifiers (typically the field title or a custom identifier),
@@ -50,6 +51,12 @@ public final class FormValidationState {
     /// Use this property to enable/disable submit buttons or determine if the form can be submitted.
     ///
     /// - Returns: `true` if all fields pass validation, `false` if any field has errors.
+    ///
+    /// ## Note
+    ///
+    /// If no fields have been validated yet (empty form), this property returns `true`.
+    /// This allows submit buttons to be enabled initially, and validation will occur
+    /// when fields are validated according to their `validationMode`.
     public var isValid: Bool {
         fieldStates.values.allSatisfy { $0 }
     }
@@ -89,11 +96,19 @@ public final class FormValidationState {
     /// ```swift
     /// form.setValid(for: "email", isValid: true)
     /// ```
+    ///
+    /// ## Note
+    ///
+    /// When `isValid` is `false`, this method only updates the field state but does not set an error message.
+    /// Use `setError(for:message:)` if you need to set a specific error message.
     public func setValid(for field: String, isValid: Bool) {
         if isValid {
             errors.removeValue(forKey: field)
+            fieldStates[field] = true
+        } else {
+            // Keep existing error message if any, but mark field as invalid
+            fieldStates[field] = false
         }
-        fieldStates[field] = isValid
     }
     
     /// Clears all errors and validation states for all fields.
