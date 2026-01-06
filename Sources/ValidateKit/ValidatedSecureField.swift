@@ -1,69 +1,64 @@
 import SwiftUI
-import Combine
-import UIKit
 
-/// A text field with built-in validation capabilities.
-///
-/// `ValidatedTextField` provides a SwiftUI text field that automatically validates user input
-/// according to the provided validation rules. It displays error messages and integrates
-/// with form-level validation state management.
-///
+/// A secure text field with built-in validation capabilities.
+///  
+/// `ValidatedSecureField` is similar to `ValidatedTextField` but uses `SecureField` to hide
+/// the input text, making it ideal for password fields.
+///  
 /// ## Basic Usage
-///
+///  
 /// ```swift
 /// struct LoginForm: View {
-///     @State private var email = ""
-///
+///     @State private var password = ""
+///  
 ///     var body: some View {
-///         ValidatedTextField(
-///             "Email",
-///             text: $email,
-///             validation: .email()
-///                 .required("Email is required")
+///         ValidatedSecureField(
+///             "Password",
+///             text: $password,
+///             validation:
+///                 .required(message: "Password is required")
+///                 .minLength(8, message: "Password must be at least 8 characters")
 ///         )
 ///     }
 /// }
 /// ```
-///
+///  
 /// ## Form Integration
-///
+///  
 /// ```swift
-/// struct RegistrationForm: View {
-///     @State private var form = FormValidationState()
-///     @State private var email = ""
-///     @State private var password = ""
+///struct RegistrationForm: View {
+///    @State private var form = FormValidationState()
+///    @State private var password = ""
+///    @State private var confirmPassword = ""
 ///
-///     var body: some View {
-///         Form {
-///             ValidatedTextField(
-///                 "Email",
-///                 text: $email,
-///                 validation: .email().required(),
-///                 form: $form
-///             )
+///    var body: some View {
+///        ValidatedSecureField(
+///           "Enter Password",
+///           text: $password,
+///           validation:
+///                .required(message: "Password is required")
+///                .minLength(8, message: "Password must be at least 8 characters")
+///                .containsUppercase(message: "Password must contain an uppercase letter")
+///                .containsNumber(message: "Password must contain a number"),
+///            form: $form
+///        )
 ///
-///             ValidatedSecureField(
-///                 "Password",
-///                 text: $password,
-///                 validation:
-///                     .required("Password is required")
-///                     .minLength(8, message: "Password must be at least 8 characters"),
-///                 form: $form
-///             )
-///
-///             Button("Submit") {
-///                 if form.isValid {
-///                     // Submit form
-///                 }
-///             }
-///             .disabled(!form.isValid)
-///         }
-///     }
-/// }
+///        ValidatedSecureField(
+///            "Enter Confirm Password",
+///            text: $confirmPassword,
+///            validation: .custom { [password] confirm in
+///                confirm == password ? .valid : .invalid("Passwords do not match")
+///            },
+///            form: $form
+///        )
+///    }
+///}
+
 /// ```
-public struct ValidatedTextField: View {
+public struct ValidatedSecureField: View {
     @Binding private var text: String
     @State private var errorMessage: String?
+    @State private var isPasswordVisible: Bool = false
     @FocusState private var isFocused: Bool
     
     private let title: String
@@ -72,32 +67,30 @@ public struct ValidatedTextField: View {
     private let validationMode: ValidationMode
     private let debounceInterval: TimeInterval
     private let errorPosition: ErrorPosition
-    private let keyboardType: UIKeyboardType
     
     @State private var debounceTask: Task<Void, Never>?
     
-    /// Creates a validated text field with the specified parameters.
+    /// Creates a validated secure text field with the specified parameters.
     ///
     /// - Parameters:
-    ///   - title: The placeholder text displayed in the text field.
+    ///   - title: The placeholder text displayed in the secure field.
     ///   - text: A binding to the text value being edited.
-    ///   - validation: The validation rules to apply to the text field.
+    ///   - validation: The validation rules to apply to the secure field.
     ///   - form: Optional binding to a `FormValidationState` for form-level validation management.
     ///   - validationMode: When to perform validation. Defaults to the global configuration setting.
     ///   - debounceInterval: Time interval in seconds to wait before validating on change. Defaults to 0.3 seconds.
     ///   - errorPosition: Where to display error messages. Defaults to `.below`.
-    ///   - keyboardType: The type of keyboard to display.
     ///
     /// ## Example Usage
     ///
     /// ```swift
-    /// ValidatedTextField(
-    ///     "Email",
-    ///     text: $email,
-    ///     validation: .email().required(),
-    ///     validationMode: .onBlur,
-    ///     debounceInterval: 0.5,
-    ///     keyboardType: .emailAddress
+    /// ValidatedSecureField(
+    ///     "Password",
+    ///     text: $password,
+    ///     validation:
+    ///         .required("Password is required")
+    ///         .minLength(8, message: "Password must be at least 8 characters"),
+    ///     validationMode: .onBlur
     /// )
     /// ```
     public init(
@@ -107,8 +100,7 @@ public struct ValidatedTextField: View {
         form: Binding<FormValidationState>? = nil,
         validationMode: ValidationMode? = nil,
         debounceInterval: TimeInterval? = nil,
-        errorPosition: ErrorPosition? = nil,
-        keyboardType: UIKeyboardType = .default
+        errorPosition: ErrorPosition? = nil
     ) {
         self.title = title
         self._text = text
@@ -117,9 +109,7 @@ public struct ValidatedTextField: View {
         self.validationMode = validationMode ?? FormValidationConfiguration.shared.defaultValidationMode
         self.debounceInterval = debounceInterval ?? FormValidationConfiguration.shared.defaultDebounceInterval
         self.errorPosition = errorPosition ?? FormValidationConfiguration.shared.errorMessagePosition
-        self.keyboardType = keyboardType
     }
-    
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -127,8 +117,14 @@ public struct ValidatedTextField: View {
                 errorView
             }
             
-            TextField(title, text: $text)
-                .keyboardType(keyboardType)
+            HStack {
+                Group {
+                    if isPasswordVisible {
+                        TextField(title, text: $text)
+                    } else {
+                        SecureField(title, text: $text)
+                    }
+                }
                 .textFieldStyle(.roundedBorder)
                 .focused($isFocused)
                 .overlay(
@@ -142,9 +138,20 @@ public struct ValidatedTextField: View {
                 }
                 .onChange(of: isFocused) { _, focused in
                     if !focused && validationMode == .onBlur {
-                        validate(value: text)
+                        validate(newValue: text)
                     }
                 }
+                
+                Button {
+                    isPasswordVisible.toggle()
+
+                } label: {
+                    Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isPasswordVisible ? "Hide password" : "Show password")
+            }
             
             if errorPosition == .below || errorPosition == .trailing {
                 HStack {
@@ -159,7 +166,7 @@ public struct ValidatedTextField: View {
         }
         .onAppear {
             if validationMode == .onChange {
-                validate(value: text)
+                validate(newValue: text)
             }
         }
         .onDisappear {
@@ -191,7 +198,18 @@ public struct ValidatedTextField: View {
         debounceTask = helper.handleTextChange(newValue, currentDebounceTask: debounceTask, errorMessage: $errorMessage)
     }
     
-    private func validate(value: String) {
-        helper.validate(newValue: value, errorMessage: $errorMessage)
+    private func validate(newValue: String) {
+        helper.validate(newValue: newValue, errorMessage: $errorMessage)
+    }
+    
+    /// Validates the secure field manually.
+    ///
+    /// Use this method when `validationMode` is set to `.manual` or `.onSubmit`
+    /// to trigger validation programmatically.
+    ///
+    /// - Returns: `true` if validation passed, `false` otherwise.
+    public func validateManually() -> Bool {
+        validate(newValue: text)
+        return errorMessage == nil
     }
 }
