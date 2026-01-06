@@ -192,6 +192,6 @@ public struct ValidatedTextField: View {
     }
     
     private func validate(value: String) {
-        helper.validate(newValue: value, errorMessage: $errorMessage)
+        helper.validate(value: value, errorMessage: $errorMessage)
     }
 }

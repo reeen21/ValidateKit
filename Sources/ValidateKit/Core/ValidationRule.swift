@@ -141,4 +141,3 @@ public enum ValidationRule {
         Validation(validator)
     }
 }
-

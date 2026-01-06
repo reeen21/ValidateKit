@@ -138,7 +138,7 @@ public struct ValidatedSecureField: View {
                 }
                 .onChange(of: isFocused) { _, focused in
                     if !focused && validationMode == .onBlur {
-                        validate(newValue: text)
+                        validate(value: text)
                     }
                 }
                 
@@ -166,7 +166,7 @@ public struct ValidatedSecureField: View {
         }
         .onAppear {
             if validationMode == .onChange {
-                validate(newValue: text)
+                validate(value: text)
             }
         }
         .onDisappear {
@@ -198,8 +198,8 @@ public struct ValidatedSecureField: View {
         debounceTask = helper.handleTextChange(newValue, currentDebounceTask: debounceTask, errorMessage: $errorMessage)
     }
     
-    private func validate(newValue: String) {
-        helper.validate(newValue: newValue, errorMessage: $errorMessage)
+    private func validate(value: String) {
+        helper.validate(value: value, errorMessage: $errorMessage)
     }
     
     /// Validates the secure field manually.
@@ -209,7 +209,7 @@ public struct ValidatedSecureField: View {
     ///
     /// - Returns: `true` if validation passed, `false` otherwise.
     public func validateManually() -> Bool {
-        validate(newValue: text)
+        validate(value: text)
         return errorMessage == nil
     }
 }

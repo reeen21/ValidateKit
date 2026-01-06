@@ -52,6 +52,7 @@ import Testing
 @Test func testEmailAndRequiredCombination() {
     let validation = Validation<String>
         .email(message: "Invalid email format")
+        .required(message: "Email is required")
     
     #expect(validation.validate("").isValid == false)
     #expect(validation.validate("invalid").isValid == false)

@@ -11,10 +11,10 @@ struct ValidationFieldHelper {
     let debounceInterval: TimeInterval
     
     func validate(
-        newValue: String,
+        value: String,
         errorMessage: Binding<String?>
     ) {
-        let result = validation.validate(newValue)
+        let result = validation.validate(value)
         
         switch result {
         case .valid:
@@ -43,9 +43,8 @@ struct ValidationFieldHelper {
             guard !Task.isCancelled else { return }
             
             await MainActor.run {
-                validate(newValue: newValue, errorMessage: errorMessage)
+                validate(value: newValue, errorMessage: errorMessage)
             }
         }
     }
 }
-
