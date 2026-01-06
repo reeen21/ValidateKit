@@ -20,7 +20,7 @@ import Foundation
 /// )
 ///
 /// // Chained validations
-/// let passwordValidation = ValidationRule.password()
+/// let passwordValidation = ValidationRule.required("Password is required")
 ///     .required("Password is required")
 ///     .minLength(8, message: "Password must be at least 8 characters")
 ///     .containsUppercase("Password must contain an uppercase letter")

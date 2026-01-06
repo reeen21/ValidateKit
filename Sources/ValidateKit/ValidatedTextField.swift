@@ -45,7 +45,7 @@ import UIKit
 ///             ValidatedSecureField(
 ///                 "Password",
 ///                 text: $password,
-///                 validation: .password()
+///                 validation:
 ///                     .required("Password is required")
 ///                     .minLength(8, message: "Password must be at least 8 characters"),
 ///                 form: $form
@@ -253,7 +253,7 @@ public struct ValidatedTextField: View {
 ///         ValidatedSecureField(
 ///             "Password",
 ///             text: $password,
-///             validation: .password()
+///             validation:
 ///                 .required("Password is required")
 ///                 .minLength(8, message: "Password must be at least 8 characters")
 ///         )
@@ -274,7 +274,7 @@ public struct ValidatedTextField: View {
 ///             ValidatedSecureField(
 ///                 "Password",
 ///                 text: $password,
-///                 validation: .password()
+///                 validation:
 ///                     .required("Password is required")
 ///                     .minLength(8, message: "Password must be at least 8 characters")
 ///                     .containsUppercase("Password must contain an uppercase letter")
@@ -336,7 +336,7 @@ public struct ValidatedSecureField: View {
     /// ValidatedSecureField(
     ///     "Password",
     ///     text: $password,
-    ///     validation: .password()
+    ///     validation:
     ///         .required("Password is required")
     ///         .minLength(8, message: "Password must be at least 8 characters"),
     ///     validationMode: .onBlur

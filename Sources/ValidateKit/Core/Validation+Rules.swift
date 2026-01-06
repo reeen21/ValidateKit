@@ -113,37 +113,7 @@ extension Validation where Value == String {
             return matches != nil ? .valid : .invalid(message)
         })
     }
-    
-    /// Creates a base password validation rule.
-    ///
-    /// This is a placeholder that always passes. Use it as a starting point
-    /// for chaining password-specific validation rules.
-    ///
-    /// - Returns: A validation rule that always passes (use with chained password rules).
-    ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// // Using type inference
-    /// ValidatedTextField(
-    ///     "Password",
-    ///     text: $password,
-    ///     validation: .password()
-    ///         .required("Password is required")
-    ///         .minLength(8, message: "Password must be at least 8 characters")
-    ///         .containsUppercase("Password must contain an uppercase letter")
-    /// )
-    ///
-    /// // Or explicitly
-    /// let validation = Validation<String>.password()
-    ///     .required("Password is required")
-    ///     .minLength(8, message: "Password must be at least 8 characters")
-    ///     .containsUppercase("Password must contain an uppercase letter")
-    /// ```
-    public static func password() -> Validation<String> {
-        ValidationRule.password()
-    }
-    
+
     /// Validates that a string contains at least one uppercase letter.
     ///
     /// This method chains with existing validations using AND logic.
@@ -155,7 +125,7 @@ extension Validation where Value == String {
     /// ## Example Usage
     ///
     /// ```swift
-    /// let validation = Validation<String>.password()
+    /// let validation = Validation<String>.required("Password is required")
     ///     .containsUppercase("Password must contain an uppercase letter")
     /// ```
     public func containsUppercase(message: String) -> Validation<String> {
@@ -177,7 +147,7 @@ extension Validation where Value == String {
     /// ## Example Usage
     ///
     /// ```swift
-    /// let validation = Validation<String>.password()
+    /// let validation = Validation<String>.required("Password is required")
     ///     .containsLowercase("Password must contain a lowercase letter")
     /// ```
     public func containsLowercase(message: String) -> Validation<String> {
@@ -199,7 +169,7 @@ extension Validation where Value == String {
     /// ## Example Usage
     ///
     /// ```swift
-    /// let validation = Validation<String>.password()
+    /// let validation = Validation<String>.required("Password is required")
     ///     .containsNumber("Password must contain a number")
     /// ```
     public func containsNumber(message: String) -> Validation<String> {
@@ -223,7 +193,7 @@ extension Validation where Value == String {
     /// ## Example Usage
     ///
     /// ```swift
-    /// let validation = Validation<String>.password()
+    /// let validation = Validation<String>.required("Password is required")
     ///     .containsSpecialCharacter("Password must contain a special character")
     /// ```
     public func containsSpecialCharacter(message: String) -> Validation<String> {
