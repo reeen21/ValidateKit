@@ -18,7 +18,7 @@ import UIKit
 ///         ValidatedTextField(
 ///             "Email",
 ///             text: $email,
-///             validation: .email()
+///             validation: ValidationRule.email()
 ///                 .required("Email is required")
 ///         )
 ///     }
@@ -38,14 +38,14 @@ import UIKit
 ///             ValidatedTextField(
 ///                 "Email",
 ///                 text: $email,
-///                 validation: .email().required(),
+///                 validation: ValidationRule.email().required(),
 ///                 form: $form
 ///             )
 ///
 ///             ValidatedSecureField(
 ///                 "Password",
 ///                 text: $password,
-///                 validation:
+///                 validation: ValidationRule
 ///                     .required("Password is required")
 ///                     .minLength(8, message: "Password must be at least 8 characters"),
 ///                 form: $form
@@ -91,14 +91,14 @@ public struct ValidatedTextField: View {
     /// ## Example Usage
     ///
     /// ```swift
-    /// ValidatedTextField(
-    ///     "Email",
-    ///     text: $email,
-    ///     validation: .email().required(),
-    ///     validationMode: .onBlur,
-    ///     debounceInterval: 0.5,
-    ///     keyboardType: .emailAddress
-    /// )
+/// ValidatedTextField(
+///     "Email",
+///     text: $email,
+///     validation: ValidationRule.email().required(),
+///     validationMode: .onBlur,
+///     debounceInterval: 0.5,
+///     keyboardType: .emailAddress
+/// )
     /// ```
     public init(
         _ title: String,

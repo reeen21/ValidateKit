@@ -17,7 +17,7 @@ import Testing
 
 // MARK: - String Validation Tests
 @Test func testRequiredValidation() {
-    let validation = Validation<String>.required()
+    let validation = ValidationRule.required()
     
     #expect(validation.validate("").isValid == false)
     #expect(validation.validate("   ").isValid == false)
@@ -25,7 +25,7 @@ import Testing
 }
 
 @Test func testEmailValidation() {
-    let validation = Validation<String>.email()
+    let validation = ValidationRule.email()
     
     #expect(validation.validate("test@example.com").isValid == true)
     #expect(validation.validate("invalid").isValid == false)
@@ -34,7 +34,7 @@ import Testing
 }
 
 @Test func testMinLengthValidation() {
-    let validation = Validation<String>.required()
+    let validation = ValidationRule.required()
         .minLength(5, message: "Too short")
     
     #expect(validation.validate("test").isValid == false)
@@ -42,7 +42,7 @@ import Testing
 }
 
 @Test func testMaxLengthValidation() {
-    let validation = Validation<String>.required()
+    let validation = ValidationRule.required()
         .maxLength(5, message: "Too long")
     
     #expect(validation.validate("test").isValid == true)
@@ -50,7 +50,7 @@ import Testing
 }
 
 @Test func testEmailAndRequiredCombination() {
-    let validation = Validation<String>
+    let validation = ValidationRule
         .email(message: "Invalid email format")
         .required(message: "Email is required")
     
@@ -60,7 +60,7 @@ import Testing
 }
 
 @Test func testPasswordValidation() {
-    let validation = Validation<String>
+    let validation = ValidationRule
         .required(message: "Password is required")
         .minLength(8, message: "Password must be at least 8 characters")
         .containsUppercase(message: "Password must contain an uppercase letter")
@@ -74,7 +74,7 @@ import Testing
 }
 
 @Test func testURLValidation() {
-    let validation = Validation<String>.url()
+    let validation = ValidationRule.url()
     
     #expect(validation.validate("https://example.com").isValid == true)
     #expect(validation.validate("http://example.com").isValid == true)
@@ -83,7 +83,7 @@ import Testing
 }
 
 @Test func testUsernameValidation() {
-    let validation = Validation<String>.username()
+    let validation = ValidationRule.username()
     
     #expect(validation.validate("username123").isValid == true)
     #expect(validation.validate("user_name").isValid == true)
@@ -92,7 +92,7 @@ import Testing
 }
 
 @Test func testAlphanumericValidation() {
-    let validation = Validation<String>
+    let validation = ValidationRule
         .required()
         .alphanumeric(message: "Only alphanumeric characters allowed")
     
@@ -102,7 +102,7 @@ import Testing
 }
 
 @Test func testMatchesValidation() {
-    let validation = Validation<String>
+    let validation = ValidationRule
         .required()
         .matches(#"^\d{4}-\d{2}-\d{2}$"#, message: "Must be in YYYY-MM-DD format")
     
@@ -114,7 +114,7 @@ import Testing
 
 @Test func testMatchesWithInvalidPattern() {
     // Invalid regex pattern should fail validation
-    let validation = Validation<String>
+    let validation = ValidationRule
         .required()
         .matches("[invalid", message: "Invalid format")
     
@@ -123,7 +123,7 @@ import Testing
 }
 
 @Test func testCustomValidation() {
-    let validation = Validation<String>.custom { value in
+    let validation = ValidationRule.custom { value in
         value.count % 2 == 0 ? .valid : .invalid("Length must be even")
     }
     
@@ -132,8 +132,8 @@ import Testing
 }
 
 @Test func testAndCombination() {
-    let validation1 = Validation<String>.required(message: "Required")
-    let validation2 = Validation<String>.custom { $0.count >= 5 ? .valid : .invalid("Too short") }
+    let validation1 = ValidationRule.required(message: "Required")
+    let validation2 = ValidationRule.custom { $0.count >= 5 ? .valid : .invalid("Too short") }
     
     let combined = validation1.and(validation2)
     
@@ -143,8 +143,8 @@ import Testing
 }
 
 @Test func testOrCombination() {
-    let emailValidation = Validation<String>.email(message: "Invalid email")
-    let phoneValidation = Validation<String>.phoneNumber(message: "Invalid phone")
+    let emailValidation = ValidationRule.email(message: "Invalid email")
+    let phoneValidation = ValidationRule.phoneNumber(message: "Invalid phone")
     
     let combined = emailValidation.or(phoneValidation)
     
@@ -155,10 +155,10 @@ import Testing
 }
 
 @Test func testWhenConditionalValidation() {
-    let validation = Validation<String>
+    let validation = ValidationRule
         .required(message: "Required")
         .when({ !$0.isEmpty }) { _ in
-            Validation<String>.required().minLength(5, message: "Must be at least 5 characters")
+            ValidationRule.required().minLength(5, message: "Must be at least 5 characters")
         }
     
     #expect(validation.validate("").isValid == false)

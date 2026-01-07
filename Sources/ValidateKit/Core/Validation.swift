@@ -7,29 +7,28 @@ import Foundation
 ///
 /// ## Example Usage
 ///
-/// ```swift
-/// // Simple validation with explicit namespace
-/// let emailValidation = ValidationRule.email()
-///
-/// // Using type inference in ValidatedTextField (no prefix needed)
-/// ValidatedTextField(
-///     "Email",
-///     text: $email,
-///     validation: .email()
-///         .required("Email is required")
-/// )
-///
-/// // Chained validations
-/// let passwordValidation = ValidationRule.required("Password is required")
-///     .required("Password is required")
-///     .minLength(8, message: "Password must be at least 8 characters")
-///     .containsUppercase("Password must contain an uppercase letter")
-///
-/// // Custom validation
-/// let customValidation = ValidationRule.custom { value in
-///     value.count % 2 == 0 ? .valid : .invalid("Length must be even")
-/// }
-/// ```
+    /// ```swift
+    /// // Simple validation with explicit namespace
+    /// let emailValidation = ValidationRule.email()
+    ///
+    /// // Using type inference in ValidatedTextField (no prefix needed)
+    /// ValidatedTextField(
+    ///     "Email",
+    ///     text: $email,
+    ///     validation: ValidationRule.email()
+    ///         .required("Email is required")
+    /// )
+    ///
+    /// // Chained validations
+    /// let passwordValidation = ValidationRule.required("Password is required")
+    ///     .minLength(8, message: "Password must be at least 8 characters")
+    ///     .containsUppercase("Password must contain an uppercase letter")
+    ///
+    /// // Custom validation
+    /// let customValidation = ValidationRule.custom { value in
+    ///     value.count % 2 == 0 ? .valid : .invalid("Length must be even")
+    /// }
+    /// ```
 public struct Validation<Value> {
     /// A closure that validates a value and returns a `ValidationResult`.
     public typealias Validator = (Value) -> ValidationResult
@@ -39,7 +38,7 @@ public struct Validation<Value> {
     /// Creates a new validation rule with the provided validator closure.
     ///
     /// - Parameter validator: A closure that takes a value and returns a `ValidationResult`.
-    public init(_ validator: @escaping Validator) {
+    init(_ validator: @escaping Validator) {
         self.validator = validator
     }
     
@@ -62,8 +61,8 @@ public struct Validation<Value> {
     /// ## Example
     ///
     /// ```swift
-    /// let validation = Validation<String>.required()
-    ///     .and(Validation<String>.email())
+    /// let validation = ValidationRule.required()
+    ///     .and(ValidationRule.email())
     /// ```
     public func and(_ other: Validation<Value>) -> Validation<Value> {
         Validation { value in
@@ -86,8 +85,8 @@ public struct Validation<Value> {
     /// ## Example
     ///
     /// ```swift
-    /// let validation = Validation<String>.email()
-    ///     .or(Validation<String>.phoneNumber())
+    /// let validation = ValidationRule.email()
+    ///     .or(ValidationRule.phoneNumber())
     /// ```
     public func or(_ other: Validation<Value>) -> Validation<Value> {
         Validation { value in
@@ -117,10 +116,9 @@ public struct Validation<Value> {
     /// ## Example
     ///
     /// ```swift
-    /// let validation = Validation<String>
-    ///     .required("Required")
+    /// let validation = ValidationRule.required("Required")
     ///     .when({ !$0.isEmpty }) { _ in
-    ///         Validation<String>.required().minLength(5, message: "Must be at least 5 characters")
+    ///         ValidationRule.required().minLength(5, message: "Must be at least 5 characters")
     ///     }
     /// ```
     public func when(_ condition: @escaping (Value) -> Bool, _ validation: @escaping (Value) -> Validation<Value>) -> Validation<Value> {
@@ -141,7 +139,9 @@ public struct Validation<Value> {
 
 // MARK: - String Validation Extensions
 extension Validation where Value == String {
-    /// Validates that a string is not empty (after trimming whitespace).
+    /// Creates a required field validation.
+    ///
+    /// This static method allows starting a validation chain.
     ///
     /// - Parameter message: The error message to display if validation fails. Defaults to "This field is required".
     /// - Returns: A validation rule that checks for required input.
@@ -150,7 +150,7 @@ extension Validation where Value == String {
     ///
     /// ```swift
     /// let validation = Validation<String>.required("Email is required")
-    /// let result = validation.validate("") // Returns .invalid("Email is required")
+    ///     .email()
     /// ```
     public static func required(message: String = "This field is required") -> Validation<String> {
         ValidationRule.required(message: message)
@@ -185,7 +185,7 @@ extension Validation where Value == String {
     /// ## Example Usage
     ///
     /// ```swift
-    /// let validation = Validation<String>.required()
+    /// let validation = ValidationRule.required()
     ///     .minLength(5, message: "Must be at least 5 characters")
     /// ```
     public func minLength(_ length: Int, message: String) -> Validation<String> {
@@ -206,7 +206,7 @@ extension Validation where Value == String {
     /// ## Example Usage
     ///
     /// ```swift
-    /// let validation = Validation<String>.required()
+    /// let validation = ValidationRule.required()
     ///     .maxLength(100, message: "Must be at most 100 characters")
     /// ```
     public func maxLength(_ length: Int, message: String) -> Validation<String> {
@@ -229,18 +229,15 @@ extension Validation where Value == String {
     ///
     /// ```swift
     /// // Date format validation
-    /// let validation = Validation<String>
-    ///     .required()
+    /// let validation = ValidationRule.required()
     ///     .matches(#"^\d{4}-\d{2}-\d{2}$"#, message: "Must be in YYYY-MM-DD format")
     ///
     /// // Custom email validation with different pattern
-    /// let customEmailValidation = Validation<String>
-    ///     .required()
+    /// let customEmailValidation = ValidationRule.required()
     ///     .matches(#"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"#, message: "Invalid email format")
     ///
     /// // Japanese postal code validation
-    /// let postalCodeValidation = Validation<String>
-    ///     .required()
+    /// let postalCodeValidation = ValidationRule.required()
     ///     .matches(#"^\d{3}-\d{4}$"#, message: "Must be in format: 123-4567")
     /// ```
     ///
@@ -258,6 +255,8 @@ extension Validation where Value == String {
     }
     
     /// Creates a custom validation rule with a custom validator closure.
+    ///
+    /// This static method allows starting a validation chain with a custom validator.
     ///
     /// - Parameter validator: A closure that takes a string value and returns a `ValidationResult`.
     /// - Returns: A validation rule using the custom validator.
@@ -284,7 +283,7 @@ extension Validation where Value == String {
     ///
     /// ```swift
     /// let password = "password123"
-    /// let validation = Validation<String>.required(message: "Password is required")
+    /// let validation = ValidationRule.required(message: "Password is required")
     ///     .custom { [password] confirm in
     ///         confirm == password ? .valid : .invalid("Passwords do not match")
     ///     }
