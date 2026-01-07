@@ -140,4 +140,58 @@ public enum ValidationRule {
     public static func custom(_ validator: @escaping (String) -> ValidationResult) -> Validation<String> {
         Validation(validator)
     }
+    
+    /// Creates a minimum length validation.
+    ///
+    /// This method automatically includes a required check, so you don't need to call `.required()` separately.
+    ///
+    /// - Parameters:
+    ///   - length: The minimum number of characters required.
+    ///   - message: The error message to display if validation fails.
+    /// - Returns: A validation rule that checks for minimum length.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = ValidationRule.minLength(5, message: "Must be at least 5 characters")
+    /// ```
+    public static func minLength(_ length: Int, message: String) -> Validation<String> {
+        required().minLength(length, message: message)
+    }
+    
+    /// Creates a maximum length validation.
+    ///
+    /// This method automatically includes a required check, so you don't need to call `.required()` separately.
+    ///
+    /// - Parameters:
+    ///   - length: The maximum number of characters allowed.
+    ///   - message: The error message to display if validation fails.
+    /// - Returns: A validation rule that checks for maximum length.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = ValidationRule.maxLength(100, message: "Must be at most 100 characters")
+    /// ```
+    public static func maxLength(_ length: Int, message: String) -> Validation<String> {
+        required().maxLength(length, message: message)
+    }
+    
+    /// Creates a pattern matching validation.
+    ///
+    /// This method automatically includes a required check, so you don't need to call `.required()` separately.
+    ///
+    /// - Parameters:
+    ///   - pattern: A regular expression pattern to match against.
+    ///   - message: The error message to display if validation fails.
+    /// - Returns: A validation rule that checks for pattern matching.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = ValidationRule.matches(#"^\d{4}-\d{2}-\d{2}$"#, message: "Must be in YYYY-MM-DD format")
+    /// ```
+    public static func matches(_ pattern: String, message: String) -> Validation<String> {
+        required().matches(pattern, message: message)
+    }
 }
