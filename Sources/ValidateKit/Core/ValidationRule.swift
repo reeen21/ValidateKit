@@ -194,4 +194,76 @@ public enum ValidationRule {
     public static func matches(_ pattern: String, message: String) -> Validation<String> {
         required().matches(pattern, message: message)
     }
+    
+    // MARK: - Integer Validations
+    
+    /// Creates a minimum value validation for integers.
+    ///
+    /// - Parameters:
+    ///   - value: The minimum value allowed.
+    ///   - message: The error message to display if validation fails.
+    /// - Returns: A validation rule that checks for minimum value.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = ValidationRule.min(18, message: "Must be at least 18")
+    /// ```
+    public static func min(_ value: Int, message: String) -> Validation<Int> {
+        Validation { input in
+            input >= value ? .valid : .invalid(message)
+        }
+    }
+    
+    /// Creates a maximum value validation for integers.
+    ///
+    /// - Parameters:
+    ///   - value: The maximum value allowed.
+    ///   - message: The error message to display if validation fails.
+    /// - Returns: A validation rule that checks for maximum value.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = ValidationRule.max(120, message: "Must be at most 120")
+    /// ```
+    public static func max(_ value: Int, message: String) -> Validation<Int> {
+        Validation { input in
+            input <= value ? .valid : .invalid(message)
+        }
+    }
+    
+    /// Creates a range validation for integers.
+    ///
+    /// - Parameters:
+    ///   - range: A closed range that the value must fall within.
+    ///   - message: The error message to display if validation fails.
+    /// - Returns: A validation rule that checks for range inclusion.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = ValidationRule.range(1...100, message: "Must be between 1 and 100")
+    /// ```
+    public static func range(_ range: ClosedRange<Int>, message: String) -> Validation<Int> {
+        Validation { input in
+            range.contains(input) ? .valid : .invalid(message)
+        }
+    }
+    
+    /// Creates a custom validation rule for integers with a custom validator closure.
+    ///
+    /// - Parameter validator: A closure that takes an integer value and returns a `ValidationResult`.
+    /// - Returns: A validation rule using the custom validator.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// let validation = ValidationRule.custom { (value: Int) in
+    ///     value % 2 == 0 ? .valid : .invalid("Must be even")
+    /// }
+    /// ```
+    public static func custom(_ validator: @escaping (Int) -> ValidationResult) -> Validation<Int> {
+        Validation(validator)
+    }
 }

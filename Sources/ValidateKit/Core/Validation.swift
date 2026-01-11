@@ -308,9 +308,7 @@ extension Validation where Value == Int {
     /// let validation = Validation<Int>.min(18, message: "Must be at least 18")
     /// ```
     public static func min(_ value: Int, message: String) -> Validation<Int> {
-        Validation { input in
-            input >= value ? .valid : .invalid(message)
-        }
+        ValidationRule.min(value, message: message)
     }
     
     /// Validates that an integer is less than or equal to a maximum value.
@@ -326,9 +324,7 @@ extension Validation where Value == Int {
     /// let validation = Validation<Int>.max(120, message: "Must be at most 120")
     /// ```
     public static func max(_ value: Int, message: String) -> Validation<Int> {
-        Validation { input in
-            input <= value ? .valid : .invalid(message)
-        }
+        ValidationRule.max(value, message: message)
     }
     
     /// Validates that an integer is within a closed range.
@@ -344,9 +340,7 @@ extension Validation where Value == Int {
     /// let validation = Validation<Int>.range(1...100, message: "Must be between 1 and 100")
     /// ```
     public static func range(_ range: ClosedRange<Int>, message: String) -> Validation<Int> {
-        Validation { input in
-            range.contains(input) ? .valid : .invalid(message)
-        }
+        ValidationRule.range(range, message: message)
     }
     
     /// Creates a custom validation rule for integers with a custom validator closure.
@@ -362,6 +356,6 @@ extension Validation where Value == Int {
     /// }
     /// ```
     public static func custom(_ validator: @escaping Validator) -> Validation<Int> {
-        Validation(validator)
+        ValidationRule.custom(validator)
     }
 }

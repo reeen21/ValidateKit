@@ -21,6 +21,10 @@ struct SamplesApp: App {
                     NavigationLink("ValidationRule API Sample") {
                         ValidationRuleAPISamplePreview()
                     }
+                    
+                    NavigationLink("Int Validation Sample") {
+                        IntValidationSamplePreview()
+                    }
                 }
                 .navigationTitle("ValidateKit Samples")
             }
@@ -72,6 +76,14 @@ struct ValidationRuleAPISamplePreview: View {
                 password: $password,
                 confirmPassword: $confirmPassword
             )
+        }
+    }
+}
+
+struct IntValidationSamplePreview: View {
+    var body: some View {
+        NavigationStack {
+            IntValidationSample()
         }
     }
 }

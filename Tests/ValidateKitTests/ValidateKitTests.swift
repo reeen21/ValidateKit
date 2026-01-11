@@ -192,6 +192,42 @@ import Testing
     #expect(validation.validate(11).isValid == false)
 }
 
+// MARK: - Int ValidationRule Tests
+@Test func testValidationRuleIntMin() {
+    let validation = ValidationRule.min(10, message: "Must be at least 10")
+    
+    #expect(validation.validate(5).isValid == false)
+    #expect(validation.validate(10).isValid == true)
+    #expect(validation.validate(15).isValid == true)
+}
+
+@Test func testValidationRuleIntMax() {
+    let validation = ValidationRule.max(10, message: "Must be at most 10")
+    
+    #expect(validation.validate(5).isValid == true)
+    #expect(validation.validate(10).isValid == true)
+    #expect(validation.validate(15).isValid == false)
+}
+
+@Test func testValidationRuleIntRange() {
+    let validation = ValidationRule.range(1...10, message: "Must be between 1 and 10")
+    
+    #expect(validation.validate(0).isValid == false)
+    #expect(validation.validate(5).isValid == true)
+    #expect(validation.validate(10).isValid == true)
+    #expect(validation.validate(11).isValid == false)
+}
+
+@Test func testValidationRuleIntCustom() {
+    let validation = ValidationRule.custom { (value: Int) in
+        value % 2 == 0 ? .valid : .invalid("Must be even")
+    }
+    
+    #expect(validation.validate(2).isValid == true)
+    #expect(validation.validate(3).isValid == false)
+    #expect(validation.validate(4).isValid == true)
+}
+
 // MARK: - FormValidationState Tests
 @MainActor @Test func testFormValidationState() {
     let state = FormValidationState()

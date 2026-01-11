@@ -189,24 +189,25 @@ ValidationRule.matches(#"^\d{4}-\d{2}-\d{2}$"#, message: "Must be in YYYY-MM-DD 
 
 ### Integer Validations
 
-`Validation<Int>` is available for validating integer values. Note that `ValidatedTextField` and `ValidatedSecureField` only accept `Validation<String>`, so you'll need to use `Validation<Int>` with custom fields or convert string input to integers.
+`Validation<Int>` is available for validating integer values. You can use either `ValidationRule` namespace or `Validation<Int>` directly. Note that `ValidatedTextField` and `ValidatedSecureField` only accept `Validation<String>`, so you'll need to use `Validation<Int>` with custom fields or convert string input to integers.
 
 ```swift
-// Minimum value
-let ageValidation = Validation<Int>.min(18, message: "Must be at least 18")
+// Using ValidationRule namespace (recommended)
+let ageValidation = ValidationRule.min(18, message: "Must be at least 18")
+let maxAgeValidation = ValidationRule.max(120, message: "Must be at most 120")
+let scoreValidation = ValidationRule.range(1...100, message: "Must be between 1 and 100")
 
-// Maximum value
-let maxAgeValidation = Validation<Int>.max(120, message: "Must be at most 120")
-
-// Range
-let scoreValidation = Validation<Int>.range(1...100, message: "Must be between 1 and 100")
+// Or using Validation<Int> directly
+let ageValidation2 = Validation<Int>.min(18, message: "Must be at least 18")
+let maxAgeValidation2 = Validation<Int>.max(120, message: "Must be at most 120")
+let scoreValidation2 = Validation<Int>.range(1...100, message: "Must be between 1 and 100")
 
 // Usage example with custom field
 struct AgeInputView: View {
     @State private var ageText = ""
     @State private var errorMessage: String?
     
-    private let validation = Validation<Int>.range(1...120, message: "Age must be between 1 and 120")
+    private let validation = ValidationRule.range(1...120, message: "Age must be between 1 and 120")
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -457,6 +458,7 @@ Check out the `Samples` directory for complete examples:
 - Password validation
 - Confirm password validation
 - ValidationRule API usage
+- Integer validation (using ValidationRule namespace)
 
 ## License
 
