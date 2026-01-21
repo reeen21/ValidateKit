@@ -7,7 +7,7 @@ struct EmailValidationSample: View {
 
     var body: some View {
         VStack {
-            Text("Validation Result: \(form.isValid.description)")
+            Text("Validation Result: \(form.isValid ? "Valid" : "Invalid")")
 
             ValidatedTextField(
                 "Enter email",
