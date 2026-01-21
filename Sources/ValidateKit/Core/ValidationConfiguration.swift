@@ -61,37 +61,6 @@ public enum ValidationMode {
     /// }
     /// ```
     case onSubmit
-    
-    /// Manual validation only.
-    ///
-    /// Validation must be triggered manually using `validateManually()` method.
-    /// Use this mode when you need full control over when validation occurs.
-    ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// struct MyForm: View {
-    ///     @State private var email = ""
-    ///     @State private var emailField: ValidatedTextField?
-    ///
-    ///     var body: some View {
-    ///         ValidatedTextField(
-    ///             "Email",
-    ///             text: $email,
-    ///             validation: .email().required(),
-    ///             validationMode: .manual
-    ///         )
-    ///         .onAppear {
-    ///             // Store reference if needed
-    ///         }
-    ///
-    ///         Button("Validate") {
-    ///             // Trigger validation manually
-    ///         }
-    ///     }
-    /// }
-    /// ```
-    case manual
 }
 
 /// Defines where error messages should be positioned relative to the field.

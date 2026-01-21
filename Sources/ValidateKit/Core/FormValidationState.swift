@@ -45,6 +45,11 @@ public final class FormValidationState {
     /// Keys are field identifiers, values are `true` if the field is valid, `false` otherwise.
     public private(set) var fieldStates: [String: Bool] = [:]
     
+    /// A dictionary mapping field identifiers to their validation functions.
+    ///
+    /// Used to trigger validation for fields with `.onSubmit` mode when the form is submitted.
+    private var validationFunctions: [String: () -> Void] = [:]
+    
     /// Returns `true` if all fields in the form are valid, `false` otherwise.
     ///
     /// Use this property to enable/disable submit buttons or determine if the form can be submitted.
@@ -168,5 +173,74 @@ public final class FormValidationState {
     /// ```
     public func isValid(for field: String) -> Bool {
         fieldStates[field] ?? true
+    }
+    
+    /// Registers a validation function for a field.
+    ///
+    /// This method is called automatically by `ValidatedTextField` and `ValidatedSecureField`
+    /// when they are created with `.onSubmit` mode. You typically don't need to call this directly.
+    ///
+    /// - Parameters:
+    ///   - field: The identifier of the field.
+    ///   - validationFunction: A closure that performs validation for the field.
+    public func registerValidation(for field: String, validationFunction: @escaping () -> Void) {
+        validationFunctions[field] = validationFunction
+    }
+    
+    /// Unregisters a validation function for a field.
+    ///
+    /// This method is called automatically when a field is removed. You typically don't need to call this directly.
+    ///
+    /// - Parameter field: The identifier of the field.
+    public func unregisterValidation(for field: String) {
+        validationFunctions.removeValue(forKey: field)
+    }
+    
+    /// Validates all fields that are registered with `.onSubmit` mode.
+    ///
+    /// Call this method when the form is submitted to trigger validation for all fields
+    /// that use `.onSubmit` mode.
+    ///
+    /// - Returns: `true` if all fields pass validation, `false` otherwise.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// struct MyForm: View {
+    ///     @State private var form = FormValidationState()
+    ///     @State private var email = ""
+    ///     @State private var password = ""
+    ///
+    ///     var body: some View {
+    ///         Form {
+    ///             ValidatedTextField(
+    ///                 "Email",
+    ///                 text: $email,
+    ///                 validation: .email().required(),
+    ///                 form: $form,
+    ///                 validationMode: .onSubmit
+    ///             )
+    ///
+    ///             ValidatedSecureField(
+    ///                 "Password",
+    ///                 text: $password,
+    ///                 validation: .required(),
+    ///                 form: $form,
+    ///                 validationMode: .onSubmit
+    ///             )
+    ///
+    ///             Button("Submit") {
+    ///                 if form.validateAll() {
+    ///                     // Submit form
+    ///                 }
+    ///             }
+    ///         }
+    ///     }
+    /// }
+    /// ```
+    @discardableResult
+    public func validateAll() -> Bool {
+        validationFunctions.values.forEach { $0() }
+        return isValid
     }
 }

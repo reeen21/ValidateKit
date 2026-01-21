@@ -141,22 +141,4 @@ public struct ValidatedTextField: View {
             text: $text
         )
     }
-    
-    /// Validates the text field manually.
-    ///
-    /// Use this method when `validationMode` is set to `.manual` or `.onSubmit`
-    /// to trigger validation programmatically.
-    ///
-    /// - Returns: `true` if validation passed, `false` otherwise.
-    public func validateManually() -> Bool {
-        let helper = ValidationFieldHelper(
-            title: title,
-            validation: validation,
-            form: form,
-            validationMode: validationMode,
-            debounceInterval: debounceInterval
-        )
-        helper.validate(value: text, errorMessage: $errorMessage)
-        return errorMessage == nil
-    }
 }

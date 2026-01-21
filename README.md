@@ -5,7 +5,7 @@ A powerful and flexible SwiftUI validation library for iOS 17+ that provides dec
 ## Features
 
 - 🎯 **Declarative API** - Chain validation rules together with a fluent, easy-to-read syntax
-- ⚡ **Real-time Validation** - Validate on change, blur, submit, or manually
+- ⚡ **Real-time Validation** - Validate on change, blur, submit
 - 📱 **SwiftUI Integration** - Built-in `ValidatedTextField` and `ValidatedSecureField` components
 - 🔗 **Form State Management** - Track validation state across multiple fields
 - 🎨 **Customizable** - Configure validation modes, error positions, and debounce intervals
@@ -291,14 +291,6 @@ ValidatedTextField(
     text: $email,
     validation: .email().required(),
     validationMode: .onSubmit
-)
-
-// Manual validation only
-ValidatedTextField(
-    "Email",
-    text: $email,
-    validation: .email().required(),
-    validationMode: .manual
 )
 ```
 
