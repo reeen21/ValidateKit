@@ -21,6 +21,45 @@ public enum ValidationMode {
     ///
     /// No validation occurs during user input. Use this mode when you want to validate
     /// all fields at once when the user attempts to submit the form.
+    ///
+    /// When using `.onSubmit` mode, call `FormValidationState.validateAll()` when the form
+    /// is submitted to trigger validation for all fields with this mode.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```swift
+    /// struct MyForm: View {
+    ///     @State private var form = FormValidationState()
+    ///     @State private var email = ""
+    ///     @State private var password = ""
+    ///
+    ///     var body: some View {
+    ///         Form {
+    ///             ValidatedTextField(
+    ///                 "Email",
+    ///                 text: $email,
+    ///                 validation: .email().required(),
+    ///                 form: $form,
+    ///                 validationMode: .onSubmit
+    ///             )
+    ///
+    ///             ValidatedSecureField(
+    ///                 "Password",
+    ///                 text: $password,
+    ///                 validation: .required(),
+    ///                 form: $form,
+    ///                 validationMode: .onSubmit
+    ///             )
+    ///
+    ///             Button("Submit") {
+    ///                 if form.validateAll() {
+    ///                     // Submit form
+    ///                 }
+    ///             }
+    ///         }
+    ///     }
+    /// }
+    /// ```
     case onSubmit
     
     /// Manual validation only.
@@ -114,7 +153,14 @@ public final class FormValidationConfiguration {
     /// or `ValidatedSecureField`. Defaults to 0.3 seconds.
     ///
     /// The debounce interval only applies when `validationMode` is `.onChange`.
-    public var defaultDebounceInterval: TimeInterval = 0.3
+    /// The value must be greater than or equal to 0. Negative values will be clamped to 0.
+    public var defaultDebounceInterval: TimeInterval = 0.3 {
+        didSet {
+            if defaultDebounceInterval < 0 {
+                defaultDebounceInterval = 0
+            }
+        }
+    }
     
     private init() {}
 }
