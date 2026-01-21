@@ -115,83 +115,48 @@ public struct ValidatedTextField: View {
         self.validation = validation
         self.form = form
         self.validationMode = validationMode ?? FormValidationConfiguration.shared.defaultValidationMode
-        self.debounceInterval = debounceInterval ?? FormValidationConfiguration.shared.defaultDebounceInterval
+        let defaultInterval = debounceInterval ?? FormValidationConfiguration.shared.defaultDebounceInterval
+        self.debounceInterval = max(0, defaultInterval)
         self.errorPosition = errorPosition ?? FormValidationConfiguration.shared.errorMessagePosition
         self.keyboardType = keyboardType
     }
     
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            if errorPosition == .above {
-                errorView
-            }
-            
-            TextField(title, text: $text)
-                .keyboardType(keyboardType)
-                .textFieldStyle(.roundedBorder)
-                .focused($isFocused)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(errorMessage != nil ? Color.red : Color.clear, lineWidth: 1)
-                )
-                .accessibilityLabel(title)
-                .accessibilityValue(errorMessage ?? "")
-                .onChange(of: text) { _, newValue in
-                    handleTextChange(newValue)
-                }
-                .onChange(of: isFocused) { _, focused in
-                    if !focused && validationMode == .onBlur {
-                        validate(value: text)
-                    }
-                }
-            
-            if errorPosition == .below || errorPosition == .trailing {
-                HStack {
-                    if errorPosition == .below {
-                        errorView
-                    } else {
-                        Spacer()
-                        errorView
-                    }
-                }
-            }
-        }
-        .onAppear {
-            if validationMode == .onChange {
-                validate(value: text)
-            }
-        }
-        .onDisappear {
-            debounceTask?.cancel()
-        }
+        ValidationFieldView(
+            errorMessage: $errorMessage,
+            isFocused: $isFocused,
+            title: title,
+            validation: validation,
+            form: form,
+            validationMode: validationMode,
+            debounceInterval: debounceInterval,
+            errorPosition: errorPosition,
+            debounceTask: $debounceTask,
+            content: { textBinding in
+                TextField(title, text: textBinding)
+                    .keyboardType(keyboardType)
+                    .textFieldStyle(.roundedBorder)
+            },
+            text: $text
+        )
     }
     
-    @ViewBuilder
-    private var errorView: some View {
-        if let errorMessage = errorMessage {
-            Text(errorMessage)
-                .font(.caption)
-                .foregroundColor(.red)
-                .accessibilityLabel("Error: \(errorMessage)")
-        }
-    }
-    
-    private var helper: ValidationFieldHelper {
-        ValidationFieldHelper(
+    /// Validates the text field manually.
+    ///
+    /// Use this method when `validationMode` is set to `.manual` or `.onSubmit`
+    /// to trigger validation programmatically.
+    ///
+    /// - Returns: `true` if validation passed, `false` otherwise.
+    public func validateManually() -> Bool {
+        let helper = ValidationFieldHelper(
             title: title,
             validation: validation,
             form: form,
             validationMode: validationMode,
             debounceInterval: debounceInterval
         )
-    }
-    
-    private func handleTextChange(_ newValue: String) {
-        debounceTask = helper.handleTextChange(newValue, currentDebounceTask: debounceTask, errorMessage: $errorMessage)
-    }
-    
-    private func validate(value: String) {
-        helper.validate(value: value, errorMessage: $errorMessage)
+        helper.validate(value: text, errorMessage: $errorMessage)
+        return errorMessage == nil
     }
 }
