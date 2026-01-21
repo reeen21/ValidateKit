@@ -247,10 +247,9 @@ extension Validation where Value == String {
     /// and return the error message. Ensure that the pattern is a valid regular expression.
     public func matches(_ pattern: String, message: String) -> Validation<String> {
         self.and(Validation { value in
-            let regex = try? NSRegularExpression(pattern: pattern)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil ? .valid : .invalid(message)
+            ValidationRegex.matches(value, pattern: pattern)
+                ? .valid
+                : .invalid(message)
         })
     }
     

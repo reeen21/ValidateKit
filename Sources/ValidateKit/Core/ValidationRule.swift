@@ -53,11 +53,9 @@ public enum ValidationRule {
     /// ```
     public static func email(message: String = "Invalid email format") -> Validation<String> {
         Validation { value in
-            let emailRegex = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
-            let regex = try? NSRegularExpression(pattern: emailRegex)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil ? .valid : .invalid(message)
+            ValidationRegex.matchesEmail(value)
+                ? .valid
+                : .invalid(message)
         }
     }
     
@@ -96,11 +94,9 @@ public enum ValidationRule {
     /// ```
     public static func phoneNumber(message: String = "Invalid phone number") -> Validation<String> {
         Validation { value in
-            let phoneRegex = #"^[\d\s\-\(\)\+]+$"#
-            let regex = try? NSRegularExpression(pattern: phoneRegex)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil && value.count >= 10 ? .valid : .invalid(message)
+            ValidationRegex.matchesPhoneNumber(value) && value.count >= 10
+                ? .valid
+                : .invalid(message)
         }
     }
     
@@ -117,11 +113,9 @@ public enum ValidationRule {
     /// ```
     public static func username(message: String = "Username can only contain letters, numbers, and underscores") -> Validation<String> {
         Validation { value in
-            let usernameRegex = #"^[a-zA-Z0-9_]+$"#
-            let regex = try? NSRegularExpression(pattern: usernameRegex)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil ? .valid : .invalid(message)
+            ValidationRegex.matchesUsername(value)
+                ? .valid
+                : .invalid(message)
         }
     }
 

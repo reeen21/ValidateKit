@@ -54,11 +54,9 @@ extension Validation where Value == String {
     /// ```
     public func alphanumeric(message: String) -> Validation<String> {
         self.and(Validation { value in
-            let alphanumericRegex = #"^[a-zA-Z0-9]+$"#
-            let regex = try? NSRegularExpression(pattern: alphanumericRegex)
-            let range = NSRange(location: 0, length: value.utf16.count)
-            let matches = regex?.firstMatch(in: value, options: [], range: range)
-            return matches != nil ? .valid : .invalid(message)
+            ValidationRegex.matchesAlphanumeric(value)
+                ? .valid
+                : .invalid(message)
         })
     }
 
