@@ -14,7 +14,7 @@ struct ValidationFieldView<Content: View>: View {
     let onValidationChange: ((Bool, String?) -> Void)?
     let validationMode: ValidationMode
     let debounceInterval: TimeInterval
-    let errorPosition: ErrorPosition
+    let errorPosition: ErrorPosition?
     @Binding var debounceTask: Task<Void, Never>?
     let content: (Binding<String>) -> Content
     @Binding var text: String
@@ -28,7 +28,7 @@ struct ValidationFieldView<Content: View>: View {
         onValidationChange: ((Bool, String?) -> Void)?,
         validationMode: ValidationMode,
         debounceInterval: TimeInterval,
-        errorPosition: ErrorPosition,
+        errorPosition: ErrorPosition?,
         debounceTask: Binding<Task<Void, Never>?>,
         content: @escaping (Binding<String>) -> Content,
         text: Binding<String>
@@ -65,7 +65,7 @@ struct ValidationFieldView<Content: View>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if errorPosition == .above {
+            if let errorPosition = errorPosition, errorPosition == .above {
                 errorView
             }
             
@@ -86,7 +86,7 @@ struct ValidationFieldView<Content: View>: View {
                     }
                 }
             
-            if errorPosition == .below || errorPosition == .trailing {
+            if let errorPosition = errorPosition, (errorPosition == .below || errorPosition == .trailing) {
                 HStack {
                     if errorPosition == .below {
                         errorView

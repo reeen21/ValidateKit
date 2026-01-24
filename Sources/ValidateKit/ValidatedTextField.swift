@@ -118,7 +118,7 @@ public struct ValidatedTextField: View {
     private let onValidationChange: ((Bool, String?) -> Void)?
     private let validationMode: ValidationMode
     private let debounceInterval: TimeInterval
-    private let errorPosition: ErrorPosition
+    private let errorPosition: ErrorPosition?
     private let keyboardType: UIKeyboardType
     
     @State private var debounceTask: Task<Void, Never>?
@@ -133,7 +133,7 @@ public struct ValidatedTextField: View {
     ///   - onValidationChange: Optional closure called when validation state changes. Receives `(isValid: Bool, errorMessage: String?)`.
     ///   - validationMode: When to perform validation. Defaults to the global configuration setting.
     ///   - debounceInterval: Time interval in seconds to wait before validating on change. Defaults to 0.3 seconds.
-    ///   - errorPosition: Where to display error messages. Defaults to `.below`.
+    ///   - errorPosition: Where to display error messages. Pass `nil` to hide error messages. Defaults to `.below` if not specified.
     ///   - keyboardType: The type of keyboard to display.
     ///
     /// ## Example Usage
@@ -170,7 +170,7 @@ public struct ValidatedTextField: View {
         self.validationMode = validationMode ?? FormValidationConfiguration.shared.defaultValidationMode
         let defaultInterval = debounceInterval ?? FormValidationConfiguration.shared.defaultDebounceInterval
         self.debounceInterval = max(0, defaultInterval)
-        self.errorPosition = errorPosition ?? FormValidationConfiguration.shared.errorMessagePosition
+        self.errorPosition = errorPosition
         self.keyboardType = keyboardType
     }
     
