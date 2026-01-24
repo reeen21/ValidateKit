@@ -37,6 +37,15 @@ struct ValidationFieldHelper {
         // Cancel any pending debounce task
         currentDebounceTask?.cancel()
         
+        // For onSubmit mode, clear errors when user starts editing
+        // This allows the submit button to be re-enabled after errors
+        if validationMode == .onSubmit && errorMessage.wrappedValue != nil {
+            errorMessage.wrappedValue = nil
+            form?.clearError(for: title)
+            onValidationChange?(true, nil)
+            return nil
+        }
+        
         guard validationMode == .onChange else { return nil }
         
         // Debounce validation to avoid excessive validation calls
