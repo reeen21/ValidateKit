@@ -24,12 +24,13 @@ import SwiftUI
 /// ```
 ///  
 /// ## Form Integration
-///  
+///
 /// ```swift
 ///struct RegistrationForm: View {
-///    @State private var form = FormValidationState()
 ///    @State private var password = ""
 ///    @State private var confirmPassword = ""
+///    @State private var isPasswordValid = false
+///    @State private var isConfirmPasswordValid = false
 ///
 ///    var body: some View {
 ///        ValidatedSecureField(
@@ -40,7 +41,9 @@ import SwiftUI
 ///                .minLength(8, message: "Password must be at least 8 characters")
 ///                .containsUppercase(message: "Password must contain an uppercase letter")
 ///                .containsNumber(message: "Password must contain a number"),
-///            form: $form
+///            onValidationChange: { isValid, _ in
+///                isPasswordValid = isValid
+///            }
 ///        )
 ///
 ///        ValidatedSecureField(
@@ -49,7 +52,9 @@ import SwiftUI
 ///            validation: .custom { [password] confirm in
 ///                confirm == password ? .valid : .invalid("Passwords do not match")
 ///            },
-///            form: $form
+///            onValidationChange: { isValid, _ in
+///                isConfirmPasswordValid = isValid
+///            }
 ///        )
 ///    }
 ///}
@@ -64,6 +69,7 @@ public struct ValidatedSecureField: View {
     private let title: String
     private let validation: Validation<String>
     private let form: Binding<FormValidationState>?
+    private let onValidationChange: ((Bool, String?) -> Void)?
     private let validationMode: ValidationMode
     private let debounceInterval: TimeInterval
     private let errorPosition: ErrorPosition
@@ -76,7 +82,8 @@ public struct ValidatedSecureField: View {
     ///   - title: The placeholder text displayed in the secure field.
     ///   - text: A binding to the text value being edited.
     ///   - validation: The validation rules to apply to the secure field.
-    ///   - form: Optional binding to a `FormValidationState` for form-level validation management.
+    ///   - form: Optional binding to a `FormValidationState` for form-level validation management. Use this for `.onSubmit` mode to call `validateAll()`.
+    ///   - onValidationChange: Optional closure called when validation state changes. Receives `(isValid: Bool, errorMessage: String?)`.
     ///   - validationMode: When to perform validation. Defaults to the global configuration setting.
     ///   - debounceInterval: Time interval in seconds to wait before validating on change. Defaults to 0.3 seconds.
     ///   - errorPosition: Where to display error messages. Defaults to `.below`.
@@ -90,6 +97,9 @@ public struct ValidatedSecureField: View {
     ///     validation:
     ///         .required("Password is required")
     ///         .minLength(8, message: "Password must be at least 8 characters"),
+    ///     onValidationChange: { isValid, errorMessage in
+    ///         print("Password is valid: \(isValid)")
+    ///     },
     ///     validationMode: .onBlur
     /// )
     /// ```
@@ -98,6 +108,7 @@ public struct ValidatedSecureField: View {
         text: Binding<String>,
         validation: Validation<String>,
         form: Binding<FormValidationState>? = nil,
+        onValidationChange: ((Bool, String?) -> Void)? = nil,
         validationMode: ValidationMode? = nil,
         debounceInterval: TimeInterval? = nil,
         errorPosition: ErrorPosition? = nil
@@ -106,6 +117,7 @@ public struct ValidatedSecureField: View {
         self._text = text
         self.validation = validation
         self.form = form
+        self.onValidationChange = onValidationChange
         self.validationMode = validationMode ?? FormValidationConfiguration.shared.defaultValidationMode
         let defaultInterval = debounceInterval ?? FormValidationConfiguration.shared.defaultDebounceInterval
         self.debounceInterval = max(0, defaultInterval)
@@ -120,6 +132,7 @@ public struct ValidatedSecureField: View {
                 title: title,
                 validation: validation,
                 form: form,
+                onValidationChange: onValidationChange,
                 validationMode: validationMode,
                 debounceInterval: debounceInterval,
                 errorPosition: errorPosition,

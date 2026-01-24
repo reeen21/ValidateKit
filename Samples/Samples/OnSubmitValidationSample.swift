@@ -10,6 +10,16 @@ struct OnSubmitValidationSample: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
+    @State private var isEmailValid = false
+    @State private var isPasswordValid = false
+    @State private var isConfirmPasswordValid = false
+    @State private var emailError: String?
+    @State private var passwordError: String?
+    @State private var confirmPasswordError: String?
+    
+    private var isFormValid: Bool {
+        form.isValid
+    }
     
     var body: some View {
         Form {
@@ -27,6 +37,10 @@ struct OnSubmitValidationSample: View {
                             .email()
                             .required(message: "Email is required"),
                     form: $form,
+                    onValidationChange: { valid, errorMessage in
+                        isEmailValid = valid
+                        emailError = errorMessage
+                    },
                     validationMode: .onSubmit
                 )
             }
@@ -41,6 +55,10 @@ struct OnSubmitValidationSample: View {
                         .containsUppercase(message: "Password must contain an uppercase letter")
                         .containsNumber(message: "Password must contain a number"),
                     form: $form,
+                    onValidationChange: { valid, errorMessage in
+                        isPasswordValid = valid
+                        passwordError = errorMessage
+                    },
                     validationMode: .onSubmit
                 )
             }
@@ -51,17 +69,23 @@ struct OnSubmitValidationSample: View {
                     text: $confirmPassword,
                     validation:
                         .required(message: "Confirm password is required")
-                        .custom { [password] confirm in
+                        .custom { confirm in
                             confirm == password ? .valid : .invalid("Passwords do not match")
                         },
                     form: $form,
+                    onValidationChange: { valid, errorMessage in
+                        isConfirmPasswordValid = valid
+                        confirmPasswordError = errorMessage
+                    },
                     validationMode: .onSubmit
                 )
             }
             
             Section {
                 Button("Submit") {
-                    if form.validateAll() {
+                    // Trigger validation for all fields with onSubmit mode
+                    let isValid = form.validateAll()
+                    if isValid {
                         // Form is valid, proceed with submission
                         print("Form submitted successfully!")
                     } else {
@@ -77,20 +101,28 @@ struct OnSubmitValidationSample: View {
                 HStack {
                     Text("Form Valid:")
                     Spacer()
-                    Text("Validation Result: \(form.isValid ? "Valid" : "Invalid")")
-                        .foregroundColor(form.isValid ? .green : .red)
+                    Text("Validation Result: \(isFormValid ? "Valid" : "Invalid")")
+                        .foregroundColor(isFormValid ? .green : .red)
                 }
                 
-                if !form.errors.isEmpty {
+                let errors = [
+                    ("Email", emailError),
+                    ("Password", passwordError),
+                    ("Confirm Password", confirmPasswordError)
+                ].compactMap { field, error in
+                    error.map { (field, $0) }
+                }
+                
+                if !errors.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Errors:")
                             .font(.headline)
-                        ForEach(Array(form.errors.keys.sorted()), id: \.self) { field in
+                        ForEach(errors, id: \.0) { field, error in
                             HStack {
                                 Text("\(field):")
                                     .font(.caption)
                                     .fontWeight(.semibold)
-                                Text(form.errors[field] ?? "")
+                                Text(error)
                                     .font(.caption)
                                     .foregroundColor(.red)
                             }

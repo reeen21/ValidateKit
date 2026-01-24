@@ -2,13 +2,14 @@ import SwiftUI
 import ValidateKit
 
 struct ConfirmPasswordValidationSample: View {
-    @State private var form = FormValidationState()
     @Binding var password: String
     @Binding var confirmPassword: String
+    @State private var isPasswordValid = false
+    @State private var isConfirmPasswordValid = false
     
     var body: some View {
         VStack {
-            Text("Validation Result: \(form.isValid ? "Valid" : "Invalid")")
+            Text("Validation Result: \(isPasswordValid && isConfirmPasswordValid ? "Valid" : "Invalid")")
             ValidatedSecureField(
                 "Password",
                 text: $password,
@@ -17,7 +18,9 @@ struct ConfirmPasswordValidationSample: View {
                         .minLength(8, message: "Password must be at least 8 characters")
                         .containsUppercase(message: "Password must contain an uppercase letter")
                         .containsNumber(message: "Password must contain a number"),
-                form: $form
+                onValidationChange: { valid, _ in
+                    isPasswordValid = valid
+                }
             )
             
             ValidatedSecureField(
@@ -28,7 +31,9 @@ struct ConfirmPasswordValidationSample: View {
                         .custom { [password] confirm in
                             confirm == password ? .valid : .invalid("Passwords do not match")
                         },
-                form: $form
+                onValidationChange: { valid, _ in
+                    isConfirmPasswordValid = valid
+                }
             )
         }
     }

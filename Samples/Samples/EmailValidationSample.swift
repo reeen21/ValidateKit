@@ -3,11 +3,11 @@ import ValidateKit
 
 struct EmailValidationSample: View {
     @Binding var email: String
-    @State private var form = FormValidationState()
+    @State private var isValid = false
 
     var body: some View {
         VStack {
-            Text("Validation Result: \(form.isValid ? "Valid" : "Invalid")")
+            Text("Validation Result: \(isValid ? "Valid" : "Invalid")")
 
             ValidatedTextField(
                 "Enter email",
@@ -16,7 +16,9 @@ struct EmailValidationSample: View {
                         .email()
                         .required(message: "Email is required")
                         .maxLength(20, message: "Enter no more than 20 characters"),
-                form: $form,
+                onValidationChange: { valid, _ in
+                    isValid = valid
+                },
                 errorPosition: .above
             )
         }

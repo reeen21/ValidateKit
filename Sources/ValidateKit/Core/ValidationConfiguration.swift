@@ -22,16 +22,17 @@ public enum ValidationMode {
     /// No validation occurs during user input. Use this mode when you want to validate
     /// all fields at once when the user attempts to submit the form.
     ///
-    /// When using `.onSubmit` mode, call `FormValidationState.validateAll()` when the form
-    /// is submitted to trigger validation for all fields with this mode.
+    /// Validation is triggered automatically when the form is submitted through the internal
+    /// state management. Use `onValidationChange` closure to track validation results.
     ///
     /// ## Example Usage
     ///
     /// ```swift
     /// struct MyForm: View {
-    ///     @State private var form = FormValidationState()
     ///     @State private var email = ""
     ///     @State private var password = ""
+    ///     @State private var isEmailValid = false
+    ///     @State private var isPasswordValid = false
     ///
     ///     var body: some View {
     ///         Form {
@@ -39,7 +40,9 @@ public enum ValidationMode {
     ///                 "Email",
     ///                 text: $email,
     ///                 validation: .email().required(),
-    ///                 form: $form,
+    ///                 onValidationChange: { isValid, _ in
+    ///                     isEmailValid = isValid
+    ///                 },
     ///                 validationMode: .onSubmit
     ///             )
     ///
@@ -47,12 +50,14 @@ public enum ValidationMode {
     ///                 "Password",
     ///                 text: $password,
     ///                 validation: .required(),
-    ///                 form: $form,
+    ///                 onValidationChange: { isValid, _ in
+    ///                     isPasswordValid = isValid
+    ///                 },
     ///                 validationMode: .onSubmit
     ///             )
     ///
     ///             Button("Submit") {
-    ///                 if form.validateAll() {
+    ///                 if isEmailValid && isPasswordValid {
     ///                     // Submit form
     ///                 }
     ///             }

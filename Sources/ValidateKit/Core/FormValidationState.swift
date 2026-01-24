@@ -22,7 +22,7 @@ import Observation
 ///         )
 ///
 ///         Button("Submit") {
-///             if form.isValid {
+///             if form.validateAll() {
 ///                 // Submit form
 ///             }
 ///         }
@@ -72,14 +72,7 @@ public final class FormValidationState {
     /// - Parameters:
     ///   - field: The identifier of the field (typically the field title or a custom identifier).
     ///   - message: The error message to display, or `nil` to clear the error.
-    ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// form.setError(for: "email", message: "Invalid email format")
-    /// form.setError(for: "email", message: nil) // Clears the error
-    /// ```
-    public func setError(for field: String, message: String?) {
+    func setError(for field: String, message: String?) {
         if let message = message {
             errors[field] = message
             fieldStates[field] = false
@@ -95,17 +88,11 @@ public final class FormValidationState {
     ///   - field: The identifier of the field.
     ///   - isValid: `true` if the field is valid, `false` otherwise.
     ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// form.setValid(for: "email", isValid: true)
-    /// ```
-    ///
     /// ## Note
     ///
     /// When `isValid` is `false`, this method only updates the field state but does not set an error message.
     /// Use `setError(for:message:)` if you need to set a specific error message.
-    public func setValid(for field: String, isValid: Bool) {
+    func setValid(for field: String, isValid: Bool) {
         if isValid {
             errors.removeValue(forKey: field)
             fieldStates[field] = true
@@ -116,15 +103,7 @@ public final class FormValidationState {
     }
     
     /// Clears all errors and validation states for all fields.
-    ///
-    /// Use this method to reset the form validation state.
-    ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// form.clearErrors() // Resets the entire form
-    /// ```
-    public func clearErrors() {
+    func clearErrors() {
         errors.removeAll()
         fieldStates.removeAll()
     }
@@ -132,13 +111,7 @@ public final class FormValidationState {
     /// Clears the error for a specific field and marks it as valid.
     ///
     /// - Parameter field: The identifier of the field to clear.
-    ///
-    /// ## Example Usage
-    ///
-    /// ```swift
-    /// form.clearError(for: "email")
-    /// ```
-    public func clearError(for field: String) {
+    func clearError(for field: String) {
         errors.removeValue(forKey: field)
         fieldStates[field] = true
     }
@@ -178,21 +151,21 @@ public final class FormValidationState {
     /// Registers a validation function for a field.
     ///
     /// This method is called automatically by `ValidatedTextField` and `ValidatedSecureField`
-    /// when they are created with `.onSubmit` mode. You typically don't need to call this directly.
+    /// when they are created with `.onSubmit` mode.
     ///
     /// - Parameters:
     ///   - field: The identifier of the field.
     ///   - validationFunction: A closure that performs validation for the field.
-    public func registerValidation(for field: String, validationFunction: @escaping () -> Void) {
+    func registerValidation(for field: String, validationFunction: @escaping () -> Void) {
         validationFunctions[field] = validationFunction
     }
     
     /// Unregisters a validation function for a field.
     ///
-    /// This method is called automatically when a field is removed. You typically don't need to call this directly.
+    /// This method is called automatically when a field is removed.
     ///
     /// - Parameter field: The identifier of the field.
-    public func unregisterValidation(for field: String) {
+    func unregisterValidation(for field: String) {
         validationFunctions.removeValue(forKey: field)
     }
     

@@ -6,7 +6,8 @@ import SwiftUI
 struct ValidationFieldHelper {
     let title: String
     let validation: Validation<String>
-    let form: Binding<FormValidationState>?
+    let form: FormValidationState?
+    let onValidationChange: ((Bool, String?) -> Void)?
     let validationMode: ValidationMode
     let debounceInterval: TimeInterval
     
@@ -19,10 +20,12 @@ struct ValidationFieldHelper {
         switch result {
         case .valid:
             errorMessage.wrappedValue = nil
-            form?.wrappedValue.setValid(for: title, isValid: true)
+            form?.setValid(for: title, isValid: true)
+            onValidationChange?(true, nil)
         case .invalid(let message):
             errorMessage.wrappedValue = message
-            form?.wrappedValue.setError(for: title, message: message)
+            form?.setError(for: title, message: message)
+            onValidationChange?(false, message)
         }
     }
     

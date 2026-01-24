@@ -10,6 +10,8 @@ struct ValidationFieldView<Content: View>: View {
     let title: String
     let validation: Validation<String>
     let form: Binding<FormValidationState>?
+    @State private var internalForm: FormValidationState?
+    let onValidationChange: ((Bool, String?) -> Void)?
     let validationMode: ValidationMode
     let debounceInterval: TimeInterval
     let errorPosition: ErrorPosition
@@ -17,11 +19,45 @@ struct ValidationFieldView<Content: View>: View {
     let content: (Binding<String>) -> Content
     @Binding var text: String
     
+    init(
+        errorMessage: Binding<String?>,
+        isFocused: FocusState<Bool>.Binding,
+        title: String,
+        validation: Validation<String>,
+        form: Binding<FormValidationState>?,
+        onValidationChange: ((Bool, String?) -> Void)?,
+        validationMode: ValidationMode,
+        debounceInterval: TimeInterval,
+        errorPosition: ErrorPosition,
+        debounceTask: Binding<Task<Void, Never>?>,
+        content: @escaping (Binding<String>) -> Content,
+        text: Binding<String>
+    ) {
+        self._errorMessage = errorMessage
+        self._isFocused = isFocused
+        self.title = title
+        self.validation = validation
+        self.form = form
+        self.onValidationChange = onValidationChange
+        self.validationMode = validationMode
+        self.debounceInterval = debounceInterval
+        self.errorPosition = errorPosition
+        self._debounceTask = debounceTask
+        self.content = content
+        self._text = text
+        self._internalForm = State(initialValue: form == nil ? FormValidationState() : nil)
+    }
+    
+    private var formState: FormValidationState? {
+        form?.wrappedValue ?? internalForm
+    }
+    
     private var helper: ValidationFieldHelper {
         ValidationFieldHelper(
             title: title,
             validation: validation,
-            form: form,
+            form: formState,
+            onValidationChange: onValidationChange,
             validationMode: validationMode,
             debounceInterval: debounceInterval
         )
@@ -70,7 +106,7 @@ struct ValidationFieldView<Content: View>: View {
             if validationMode == .onSubmit {
                 // Capture the text binding to access the latest value when validation is triggered
                 let textBinding = $text
-                form?.wrappedValue.registerValidation(for: title) {
+                formState?.registerValidation(for: title) {
                     validate(value: textBinding.wrappedValue)
                 }
             }
@@ -80,7 +116,7 @@ struct ValidationFieldView<Content: View>: View {
             
             // Unregister validation function
             if validationMode == .onSubmit {
-                form?.wrappedValue.unregisterValidation(for: title)
+                formState?.unregisterValidation(for: title)
             }
         }
     }

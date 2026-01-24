@@ -2,7 +2,6 @@ import SwiftUI
 import ValidateKit
 
 struct PasswordValidationSample: View {
-    @State private var form = FormValidationState()
     @Binding var password: String
 
     var body: some View {
