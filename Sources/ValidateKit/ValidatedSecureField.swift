@@ -141,8 +141,10 @@ public struct ValidatedSecureField: View {
                     Group {
                         if isPasswordVisible {
                             TextField(title, text: textBinding)
+                                .autocapitalization(.none)
                         } else {
                             SecureField(title, text: textBinding)
+                                .autocapitalization(.none)
                         }
                     }
                     .textFieldStyle(.roundedBorder)

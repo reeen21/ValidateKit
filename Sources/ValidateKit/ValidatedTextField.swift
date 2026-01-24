@@ -190,6 +190,7 @@ public struct ValidatedTextField: View {
             content: { textBinding in
                 TextField(title, text: textBinding)
                     .keyboardType(keyboardType)
+                    .autocapitalization(.none)
                     .textFieldStyle(.roundedBorder)
             },
             text: $text
