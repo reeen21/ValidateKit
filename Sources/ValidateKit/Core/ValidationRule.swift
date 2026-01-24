@@ -12,8 +12,8 @@ import Foundation
 /// let emailValidation = ValidationRule.email()
 ///     .required("Email is required")
 ///
-/// // In ValidatedTextField, you can use type inference (no ValidationRule prefix needed)
-/// ValidatedTextField(
+/// // In ValidationTextField, you can use type inference (no ValidationRule prefix needed)
+/// ValidationTextField(
 ///     "Email",
 ///     text: $email,
 ///     validation: .email()

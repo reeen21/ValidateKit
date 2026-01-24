@@ -4,7 +4,7 @@ import UIKit
 
 /// A text field with built-in validation capabilities.
 ///
-/// `ValidatedTextField` provides a SwiftUI text field that automatically validates user input
+/// `ValidationTextField` provides a SwiftUI text field that automatically validates user input
 /// according to the provided validation rules. It displays error messages and integrates
 /// with form-level validation state management.
 ///
@@ -15,7 +15,7 @@ import UIKit
 ///     @State private var email = ""
 ///
 ///     var body: some View {
-///         ValidatedTextField(
+///         ValidationTextField(
 ///             "Email",
 ///             text: $email,
 ///             validation: ValidationRule.email()
@@ -38,7 +38,7 @@ import UIKit
 ///
 ///     var body: some View {
 ///         Form {
-///             ValidatedTextField(
+///             ValidationTextField(
 ///                 "Email",
 ///                 text: $email,
 ///                 validation: ValidationRule.email().required(),
@@ -47,7 +47,7 @@ import UIKit
 ///                 }
 ///             )
 ///
-///             ValidatedSecureField(
+///             ValidationSecureField(
 ///                 "Password",
 ///                 text: $password,
 ///                 validation: ValidationRule
@@ -79,7 +79,7 @@ import UIKit
 ///
 ///     var body: some View {
 ///         Form {
-///             ValidatedTextField(
+///             ValidationTextField(
 ///                 "Email",
 ///                 text: $email,
 ///                 validation: ValidationRule.email().required(),
@@ -87,7 +87,7 @@ import UIKit
 ///                 validationMode: .onSubmit
 ///             )
 ///
-///             ValidatedSecureField(
+///             ValidationSecureField(
 ///                 "Password",
 ///                 text: $password,
 ///                 validation: ValidationRule
@@ -107,7 +107,7 @@ import UIKit
 ///     }
 /// }
 /// ```
-public struct ValidatedTextField: View {
+public struct ValidationTextField: View {
     @Binding private var text: String
     @State private var errorMessage: String?
     @FocusState private var isFocused: Bool
@@ -141,7 +141,7 @@ public struct ValidatedTextField: View {
     /// ## Example Usage
     ///
     /// ```swift
-/// ValidatedTextField(
+/// ValidationTextField(
 ///     "Email",
 ///     text: $email,
 ///     validation: ValidationRule.email().required(),

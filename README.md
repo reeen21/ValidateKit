@@ -49,14 +49,14 @@ struct LoginForm: View {
     
     var body: some View {
         Form {
-            ValidatedTextField(
+            ValidationTextField(
                 "Email",
                 text: $email,
                 validation: ValidationRule.email()
                     .required(message: "Email is required")
             )
             
-            ValidatedSecureField(
+            ValidationSecureField(
                 "Password",
                 text: $password,
                 validation: ValidationRule
@@ -79,14 +79,14 @@ struct RegistrationForm: View {
     
     var body: some View {
         Form {
-            ValidatedTextField(
+            ValidationTextField(
                 "Email",
                 text: $email,
                 validation: ValidationRule.email().required(),
                 form: $form
             )
             
-            ValidatedSecureField(
+            ValidationSecureField(
                 "Password",
                 text: $password,
                 validation: ValidationRule
@@ -97,7 +97,7 @@ struct RegistrationForm: View {
                 form: $form
             )
             
-            ValidatedSecureField(
+            ValidationSecureField(
                 "Confirm Password",
                 text: $confirmPassword,
                 validation: ValidationRule
@@ -189,7 +189,7 @@ ValidationRule.matches(#"^\d{4}-\d{2}-\d{2}$"#, message: "Must be in YYYY-MM-DD 
 
 ### Integer Validations
 
-`Validation<Int>` is available for validating integer values. You can use either `ValidationRule` namespace or `Validation<Int>` directly. Note that `ValidatedTextField` and `ValidatedSecureField` only accept `Validation<String>`, so you'll need to use `Validation<Int>` with custom fields or convert string input to integers.
+`Validation<Int>` is available for validating integer values. You can use either `ValidationRule` namespace or `Validation<Int>` directly. Note that `ValidationTextField` and `ValidationSecureField` only accept `Validation<String>`, so you'll need to use `Validation<Int>` with custom fields or convert string input to integers.
 
 ```swift
 // Using ValidationRule namespace (recommended)
@@ -270,7 +270,7 @@ Control when validation occurs:
 
 ```swift
 // Validate on every change (with debouncing)
-ValidatedTextField(
+ValidationTextField(
     "Email",
     text: $email,
     validation: .email().required(),
@@ -278,7 +278,7 @@ ValidatedTextField(
 )
 
 // Validate when field loses focus (default)
-ValidatedTextField(
+ValidationTextField(
     "Email",
     text: $email,
     validation: .email().required(),
@@ -286,7 +286,7 @@ ValidatedTextField(
 )
 
 // Validate only on form submit
-ValidatedTextField(
+ValidationTextField(
     "Email",
     text: $email,
     validation: .email().required(),
@@ -300,7 +300,7 @@ Control where error messages appear:
 
 ```swift
 // Below the field (default)
-ValidatedTextField(
+ValidationTextField(
     "Email",
     text: $email,
     validation: .email().required(),
@@ -308,7 +308,7 @@ ValidatedTextField(
 )
 
 // Above the field
-ValidatedTextField(
+ValidationTextField(
     "Email",
     text: $email,
     validation: .email().required(),
@@ -316,7 +316,7 @@ ValidatedTextField(
 )
 
 // Trailing side (right in LTR languages)
-ValidatedTextField(
+ValidationTextField(
     "Email",
     text: $email,
     validation: .email().required(),
@@ -344,7 +344,7 @@ Use `FormValidationState` to manage validation across multiple fields:
 @State private var form = FormValidationState()
 
 // Create fields with fieldID
-ValidatedTextField(
+ValidationTextField(
     "Email",
     text: $email,
     validation: .email().required(),
@@ -379,7 +379,7 @@ form.clearError(for: "email")
 When using `FormValidationState`, you can specify a unique `fieldID` for each field to avoid conflicts when multiple fields have the same placeholder text:
 
 ```swift
-ValidatedTextField(
+ValidationTextField(
     "Enter your email",  // Placeholder text (title)
     text: $email,
     validation: .email().required(),
@@ -387,7 +387,7 @@ ValidatedTextField(
     form: $form
 )
 
-ValidatedTextField(
+ValidationTextField(
     "Enter your password",
     text: $password,
     validation: .required(),
@@ -411,7 +411,7 @@ If you don't specify `fieldID`, the field's `title` (placeholder text) will be u
 
 ### Using Validation API Directly
 
-You can use the validation API without `ValidatedTextField`:
+You can use the validation API without `ValidationTextField`:
 
 ```swift
 let emailValidation = ValidationRule.email()
@@ -455,7 +455,7 @@ struct CustomValidatedField: View {
 
 ## Components
 
-### ValidatedTextField
+### ValidationTextField
 
 A text field with built-in validation capabilities.
 
@@ -470,7 +470,7 @@ A text field with built-in validation capabilities.
 - `errorPosition`: Where to display errors (default: `.below`)
 - `keyboardType`: Keyboard type to display
 
-### ValidatedSecureField
+### ValidationSecureField
 
 A secure text field (for passwords) with built-in validation and password visibility toggle.
 

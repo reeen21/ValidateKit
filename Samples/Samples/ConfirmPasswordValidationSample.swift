@@ -10,7 +10,7 @@ struct ConfirmPasswordValidationSample: View {
     var body: some View {
         VStack {
             Text("Validation Result: \(isPasswordValid && isConfirmPasswordValid ? "Valid" : "Invalid")")
-            ValidatedSecureField(
+            ValidationSecureField(
                 "Password",
                 text: $password,
                 validation:
@@ -23,7 +23,7 @@ struct ConfirmPasswordValidationSample: View {
                 }
             )
             
-            ValidatedSecureField(
+            ValidationSecureField(
                 "Confirm Password",
                 text: $confirmPassword,
                 validation:

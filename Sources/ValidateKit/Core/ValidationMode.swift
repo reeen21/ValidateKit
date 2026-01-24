@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Defines when validation should be performed.
 ///
-/// Use this enum to control the timing of validation in `ValidatedTextField` and `ValidatedSecureField`.
+/// Use this enum to control the timing of validation in `ValidationTextField` and `ValidationSecureField`.
 public enum ValidationMode {
     /// Validate on every text change (with debouncing).
     ///
@@ -35,7 +35,7 @@ public enum ValidationMode {
     ///
     ///     var body: some View {
     ///         Form {
-    ///             ValidatedTextField(
+    ///             ValidationTextField(
     ///                 "Email",
     ///                 text: $email,
     ///                 validation: .email().required(),
@@ -45,7 +45,7 @@ public enum ValidationMode {
     ///                 validationMode: .onSubmit
     ///             )
     ///
-    ///             ValidatedSecureField(
+    ///             ValidationSecureField(
     ///                 "Password",
     ///                 text: $password,
     ///                 validation: .required(),

@@ -14,7 +14,7 @@ import Observation
 ///     @State private var email = ""
 ///
 ///     var body: some View {
-///         ValidatedTextField(
+///         ValidationTextField(
 ///             "Email",
 ///             text: $email,
 ///             validation: .email().required(),
@@ -110,7 +110,7 @@ public final class FormValidationState {
     
     /// Clears the error for a specific field and marks it as valid.
     ///
-    /// - Parameter fieldID: The unique identifier of the field to clear. This should match the `fieldID` parameter passed to `ValidatedTextField` or `ValidatedSecureField`.
+    /// - Parameter fieldID: The unique identifier of the field to clear. This should match the `fieldID` parameter passed to `ValidationTextField` or `ValidationSecureField`.
     public func clearError(for fieldID: String) {
         errors.removeValue(forKey: fieldID)
         fieldStates[fieldID] = true
@@ -118,13 +118,13 @@ public final class FormValidationState {
     
     /// Returns the error message for a specific field, if any.
     ///
-    /// - Parameter fieldID: The unique identifier of the field. This should match the `fieldID` parameter passed to `ValidatedTextField` or `ValidatedSecureField`. If `fieldID` was not provided, use the field's `title` (placeholder text).
+    /// - Parameter fieldID: The unique identifier of the field. This should match the `fieldID` parameter passed to `ValidationTextField` or `ValidationSecureField`. If `fieldID` was not provided, use the field's `title` (placeholder text).
     /// - Returns: The error message string if the field has an error, `nil` otherwise.
     ///
     /// ## Example Usage
     ///
     /// ```swift
-    /// ValidatedTextField(
+    /// ValidationTextField(
     ///     "Email",
     ///     text: $email,
     ///     validation: .email().required(),
@@ -143,13 +143,13 @@ public final class FormValidationState {
     
     /// Returns whether a specific field is valid.
     ///
-    /// - Parameter fieldID: The unique identifier of the field. This should match the `fieldID` parameter passed to `ValidatedTextField` or `ValidatedSecureField`. If `fieldID` was not provided, use the field's `title` (placeholder text).
+    /// - Parameter fieldID: The unique identifier of the field. This should match the `fieldID` parameter passed to `ValidationTextField` or `ValidationSecureField`. If `fieldID` was not provided, use the field's `title` (placeholder text).
     /// - Returns: `true` if the field is valid or has no validation state, `false` if it has errors.
     ///
     /// ## Example Usage
     ///
     /// ```swift
-    /// ValidatedTextField(
+    /// ValidationTextField(
     ///     "Email",
     ///     text: $email,
     ///     validation: .email().required(),
@@ -168,7 +168,7 @@ public final class FormValidationState {
     
     /// Registers a validation function for a field.
     ///
-    /// This method is called automatically by `ValidatedTextField` and `ValidatedSecureField`
+    /// This method is called automatically by `ValidationTextField` and `ValidationSecureField`
     /// when they are created with `.onSubmit` mode.
     ///
     /// - Parameters:
@@ -204,21 +204,21 @@ public final class FormValidationState {
     ///
     ///     var body: some View {
     ///         Form {
-    ///             ValidatedTextField(
-    ///                 "Email",
-    ///                 text: $email,
-    ///                 validation: .email().required(),
-    ///                 form: $form,
-    ///                 validationMode: .onSubmit
-    ///             )
-    ///
-    ///             ValidatedSecureField(
-    ///                 "Password",
-    ///                 text: $password,
-    ///                 validation: .required(),
-    ///                 form: $form,
-    ///                 validationMode: .onSubmit
-    ///             )
+///             ValidationTextField(
+///                 "Email",
+///                 text: $email,
+///                 validation: .email().required(),
+///                 form: $form,
+///                 validationMode: .onSubmit
+///             )
+///
+///             ValidationSecureField(
+///                 "Password",
+///                 text: $password,
+///                 validation: .required(),
+///                 form: $form,
+///                 validationMode: .onSubmit
+///             )
     ///
     ///             Button("Submit") {
     ///                 if form.validateAll() {

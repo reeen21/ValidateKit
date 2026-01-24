@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A secure text field with built-in validation capabilities.
 ///  
-/// `ValidatedSecureField` is similar to `ValidatedTextField` but uses `SecureField` to hide
+/// `ValidationSecureField` is similar to `ValidationTextField` but uses `SecureField` to hide
 /// the input text, making it ideal for password fields.
 ///  
 /// ## Basic Usage
@@ -12,7 +12,7 @@ import SwiftUI
 ///     @State private var password = ""
 ///  
 ///     var body: some View {
-///         ValidatedSecureField(
+///         ValidationSecureField(
 ///             "Password",
 ///             text: $password,
 ///             validation:
@@ -33,7 +33,7 @@ import SwiftUI
 ///    @State private var isConfirmPasswordValid = false
 ///
 ///    var body: some View {
-///        ValidatedSecureField(
+///        ValidationSecureField(
 ///           "Enter Password",
 ///           text: $password,
 ///           validation:
@@ -46,7 +46,7 @@ import SwiftUI
 ///            }
 ///        )
 ///
-///        ValidatedSecureField(
+///        ValidationSecureField(
 ///            "Enter Confirm Password",
 ///            text: $confirmPassword,
 ///            validation: .custom { [password] confirm in
@@ -60,7 +60,7 @@ import SwiftUI
 ///}
 
 /// ```
-public struct ValidatedSecureField: View {
+public struct ValidationSecureField: View {
     @Binding private var text: String
     @State private var errorMessage: String?
     @State private var isPasswordVisible: Bool = false
@@ -93,7 +93,7 @@ public struct ValidatedSecureField: View {
     /// ## Example Usage
     ///
     /// ```swift
-    /// ValidatedSecureField(
+    /// ValidationSecureField(
     ///     "Password",
     ///     text: $password,
     ///     validation:

@@ -20,7 +20,7 @@ struct FieldIDSample: View {
             }
             
             Section("Primary Email") {
-                ValidatedTextField(
+                ValidationTextField(
                     "Enter your email",  // Same placeholder text
                     text: $primaryEmail,
                     validation: .email().required(message: "Primary email is required"),
@@ -31,7 +31,7 @@ struct FieldIDSample: View {
             }
             
             Section("Secondary Email") {
-                ValidatedTextField(
+                ValidationTextField(
                     "Enter your email",  // Same placeholder text
                     text: $secondaryEmail,
                     validation: .email().required(message: "Secondary email is required"),

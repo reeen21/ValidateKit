@@ -30,7 +30,7 @@ struct OnSubmitValidationSample: View {
             }
             
             Section("Email") {
-                ValidatedTextField(
+                ValidationTextField(
                     "Email",
                     text: $email,
                     validation:
@@ -47,7 +47,7 @@ struct OnSubmitValidationSample: View {
             }
             
             Section("Password") {
-                ValidatedSecureField(
+                ValidationSecureField(
                     "Password",
                     text: $password,
                     validation:
@@ -66,7 +66,7 @@ struct OnSubmitValidationSample: View {
             }
             
             Section("Confirm Password") {
-                ValidatedSecureField(
+                ValidationSecureField(
                     "Confirm Password",
                     text: $confirmPassword,
                     validation:

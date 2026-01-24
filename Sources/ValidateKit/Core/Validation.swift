@@ -11,8 +11,8 @@ import Foundation
     /// // Simple validation with explicit namespace
     /// let emailValidation = ValidationRule.email()
     ///
-    /// // Using type inference in ValidatedTextField (no prefix needed)
-    /// ValidatedTextField(
+    /// // Using type inference in ValidationTextField (no prefix needed)
+    /// ValidationTextField(
     ///     "Email",
     ///     text: $email,
     ///     validation: ValidationRule.email()

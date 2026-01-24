@@ -3,7 +3,7 @@ import SwiftUI
 /// A reusable view component for validated text fields.
 ///
 /// This component handles the common validation UI logic shared between
-/// `ValidatedTextField` and `ValidatedSecureField`.
+/// `ValidationTextField` and `ValidationSecureField`.
 struct ValidationFieldView<Content: View>: View {
     @Binding var errorMessage: String?
     @FocusState.Binding var isFocused: Bool

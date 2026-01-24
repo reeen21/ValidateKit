@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-/// Helper struct for common validation logic shared between `ValidatedTextField` and `ValidatedSecureField`.
+/// Helper struct for common validation logic shared between `ValidationTextField` and `ValidationSecureField`.
 @MainActor
 struct ValidationFieldHelper {
     let fieldID: String

@@ -5,7 +5,7 @@ struct PasswordValidationSample: View {
     @Binding var password: String
 
     var body: some View {
-            ValidatedTextField(
+            ValidationTextField(
                 "Password",
                 text: $password,
                 validation:

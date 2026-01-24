@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Defines where error messages should be positioned relative to the field.
 ///
-/// Use this enum to control the layout of error messages in `ValidatedTextField` and `ValidatedSecureField`.
+/// Use this enum to control the layout of error messages in `ValidationTextField` and `ValidationSecureField`.
 public enum ErrorPosition {
     /// Display errors below the field.
     ///

@@ -9,7 +9,7 @@ struct EmailValidationSample: View {
         VStack {
             Text("Validation Result: \(isValid ? "Valid" : "Invalid")")
 
-            ValidatedTextField(
+            ValidationTextField(
                 "Enter email",
                 text: $email,
                 validation:

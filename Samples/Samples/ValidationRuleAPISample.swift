@@ -1,7 +1,7 @@
 import SwiftUI
 import ValidateKit
 
-/// Sample demonstrating how to use ValidationRule API directly without ValidatedTextField/ValidatedSecureField
+/// Sample demonstrating how to use ValidationRule API directly without ValidationTextField/ValidationSecureField
 struct ValidationRuleAPISample: View {
     @Binding var email: String
     @Binding var password: String
