@@ -8,6 +8,7 @@ struct ValidationFieldView<Content: View>: View {
     @Binding var errorMessage: String?
     @FocusState.Binding var isFocused: Bool
     let title: String
+    let fieldID: String
     let validation: Validation<String>
     let form: Binding<FormValidationState>?
     @State private var internalForm: FormValidationState?
@@ -23,6 +24,7 @@ struct ValidationFieldView<Content: View>: View {
         errorMessage: Binding<String?>,
         isFocused: FocusState<Bool>.Binding,
         title: String,
+        fieldID: String,
         validation: Validation<String>,
         form: Binding<FormValidationState>?,
         onValidationChange: ((Bool, String?) -> Void)?,
@@ -36,6 +38,7 @@ struct ValidationFieldView<Content: View>: View {
         self._errorMessage = errorMessage
         self._isFocused = isFocused
         self.title = title
+        self.fieldID = fieldID
         self.validation = validation
         self.form = form
         self.onValidationChange = onValidationChange
@@ -54,7 +57,7 @@ struct ValidationFieldView<Content: View>: View {
     
     private var helper: ValidationFieldHelper {
         ValidationFieldHelper(
-            title: title,
+            fieldID: fieldID,
             validation: validation,
             form: formState,
             onValidationChange: onValidationChange,
@@ -106,7 +109,7 @@ struct ValidationFieldView<Content: View>: View {
             if validationMode == .onSubmit {
                 // Capture the text binding to access the latest value when validation is triggered
                 let textBinding = $text
-                formState?.registerValidation(for: title) {
+                formState?.registerValidation(for: fieldID) {
                     validate(value: textBinding.wrappedValue)
                 }
             }
@@ -116,7 +119,7 @@ struct ValidationFieldView<Content: View>: View {
             
             // Unregister validation function
             if validationMode == .onSubmit {
-                formState?.unregisterValidation(for: title)
+                formState?.unregisterValidation(for: fieldID)
             }
         }
     }

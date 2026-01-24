@@ -113,6 +113,7 @@ public struct ValidatedTextField: View {
     @FocusState private var isFocused: Bool
     
     private let title: String
+    private let fieldID: String
     private let validation: Validation<String>
     private let form: Binding<FormValidationState>?
     private let onValidationChange: ((Bool, String?) -> Void)?
@@ -129,6 +130,7 @@ public struct ValidatedTextField: View {
     ///   - title: The placeholder text displayed in the text field.
     ///   - text: A binding to the text value being edited.
     ///   - validation: The validation rules to apply to the text field.
+    ///   - fieldID: Optional unique identifier for this field. Used with `FormValidationState` to identify the field when calling `error(for:)` or `isValid(for:)`. If not provided, defaults to `title`.
     ///   - form: Optional binding to a `FormValidationState` for form-level validation management. Use this for `.onSubmit` mode to call `validateAll()`.
     ///   - onValidationChange: Optional closure called when validation state changes. Receives `(isValid: Bool, errorMessage: String?)`.
     ///   - validationMode: When to perform validation. Defaults to the global configuration setting.
@@ -143,6 +145,7 @@ public struct ValidatedTextField: View {
 ///     "Email",
 ///     text: $email,
 ///     validation: ValidationRule.email().required(),
+///     fieldID: "email",
 ///     onValidationChange: { isValid, errorMessage in
 ///         print("Email is valid: \(isValid)")
 ///     },
@@ -155,6 +158,7 @@ public struct ValidatedTextField: View {
         _ title: String,
         text: Binding<String>,
         validation: Validation<String>,
+        fieldID: String? = nil,
         form: Binding<FormValidationState>? = nil,
         onValidationChange: ((Bool, String?) -> Void)? = nil,
         validationMode: ValidationMode? = nil,
@@ -163,6 +167,7 @@ public struct ValidatedTextField: View {
         keyboardType: UIKeyboardType = .default
     ) {
         self.title = title
+        self.fieldID = fieldID ?? title
         self._text = text
         self.validation = validation
         self.form = form
@@ -180,6 +185,7 @@ public struct ValidatedTextField: View {
             errorMessage: $errorMessage,
             isFocused: $isFocused,
             title: title,
+            fieldID: fieldID,
             validation: validation,
             form: form,
             onValidationChange: onValidationChange,

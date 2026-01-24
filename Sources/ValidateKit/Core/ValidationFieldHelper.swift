@@ -4,7 +4,7 @@ import SwiftUI
 /// Helper struct for common validation logic shared between `ValidatedTextField` and `ValidatedSecureField`.
 @MainActor
 struct ValidationFieldHelper {
-    let title: String
+    let fieldID: String
     let validation: Validation<String>
     let form: FormValidationState?
     let onValidationChange: ((Bool, String?) -> Void)?
@@ -20,11 +20,11 @@ struct ValidationFieldHelper {
         switch result {
         case .valid:
             errorMessage.wrappedValue = nil
-            form?.setValid(for: title, isValid: true)
+            form?.setValid(for: fieldID, isValid: true)
             onValidationChange?(true, nil)
         case .invalid(let message):
             errorMessage.wrappedValue = message
-            form?.setError(for: title, message: message)
+            form?.setError(for: fieldID, message: message)
             onValidationChange?(false, message)
         }
     }
@@ -41,7 +41,7 @@ struct ValidationFieldHelper {
         // This allows the submit button to be re-enabled after errors
         if validationMode == .onSubmit && errorMessage.wrappedValue != nil {
             errorMessage.wrappedValue = nil
-            form?.clearError(for: title)
+            form?.clearError(for: fieldID)
             onValidationChange?(true, nil)
             return nil
         }

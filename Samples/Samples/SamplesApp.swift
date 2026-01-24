@@ -29,6 +29,10 @@ struct SamplesApp: App {
                     NavigationLink("OnSubmit Validation Sample") {
                         OnSubmitValidationSamplePreview()
                     }
+                    
+                    NavigationLink("Field ID Sample") {
+                        FieldIDSamplePreview()
+                    }
                 }
                 .navigationTitle("ValidateKit Samples")
             }
@@ -96,6 +100,14 @@ struct OnSubmitValidationSamplePreview: View {
     var body: some View {
         NavigationStack {
             OnSubmitValidationSample()
+        }
+    }
+}
+
+struct FieldIDSamplePreview: View {
+    var body: some View {
+        NavigationStack {
+            FieldIDSample()
         }
     }
 }

@@ -343,17 +343,26 @@ Use `FormValidationState` to manage validation across multiple fields:
 ```swift
 @State private var form = FormValidationState()
 
+// Create fields with fieldID
+ValidatedTextField(
+    "Email",
+    text: $email,
+    validation: .email().required(),
+    fieldID: "email",  // Unique identifier
+    form: $form
+)
+
 // Check if entire form is valid
 if form.isValid {
     // Submit form
 }
 
-// Check specific field
+// Check specific field using fieldID
 if form.isValid(for: "email") {
     // Email is valid
 }
 
-// Get error for specific field
+// Get error for specific field using fieldID
 if let error = form.error(for: "email") {
     print("Email error: \(error)")
 }
@@ -361,9 +370,42 @@ if let error = form.error(for: "email") {
 // Clear all errors
 form.clearErrors()
 
-// Clear error for specific field
+// Clear error for specific field using fieldID
 form.clearError(for: "email")
 ```
+
+### Field Identifiers
+
+When using `FormValidationState`, you can specify a unique `fieldID` for each field to avoid conflicts when multiple fields have the same placeholder text:
+
+```swift
+ValidatedTextField(
+    "Enter your email",  // Placeholder text (title)
+    text: $email,
+    validation: .email().required(),
+    fieldID: "email",  // Unique identifier
+    form: $form
+)
+
+ValidatedTextField(
+    "Enter your password",
+    text: $password,
+    validation: .required(),
+    fieldID: "password",  // Unique identifier
+    form: $form
+)
+
+// Later, retrieve errors using fieldID
+if let emailError = form.error(for: "email") {
+    // Handle email error
+}
+
+if let passwordError = form.error(for: "password") {
+    // Handle password error
+}
+```
+
+If you don't specify `fieldID`, the field's `title` (placeholder text) will be used as the identifier. However, using explicit `fieldID` values is recommended to avoid conflicts and make your code more maintainable.
 
 ## Advanced Usage
 
@@ -421,6 +463,7 @@ A text field with built-in validation capabilities.
 - `title`: Placeholder text
 - `text`: Binding to the text value
 - `validation`: Validation rules to apply
+- `fieldID`: Optional unique identifier for this field. Used with `FormValidationState` to identify the field when calling `error(for:)` or `isValid(for:)`. If not provided, defaults to `title`.
 - `form`: Optional form validation state binding
 - `validationMode`: When to perform validation (default: from global config)
 - `debounceInterval`: Debounce interval for onChange mode (default: 0.3 seconds)
@@ -435,6 +478,7 @@ A secure text field (for passwords) with built-in validation and password visibi
 - `title`: Placeholder text
 - `text`: Binding to the text value
 - `validation`: Validation rules to apply
+- `fieldID`: Optional unique identifier for this field. Used with `FormValidationState` to identify the field when calling `error(for:)` or `isValid(for:)`. If not provided, defaults to `title`.
 - `form`: Optional form validation state binding
 - `validationMode`: When to perform validation
 - `debounceInterval`: Debounce interval for onChange mode

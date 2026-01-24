@@ -67,6 +67,7 @@ public struct ValidatedSecureField: View {
     @FocusState private var isFocused: Bool
     
     private let title: String
+    private let fieldID: String
     private let validation: Validation<String>
     private let form: Binding<FormValidationState>?
     private let onValidationChange: ((Bool, String?) -> Void)?
@@ -82,6 +83,7 @@ public struct ValidatedSecureField: View {
     ///   - title: The placeholder text displayed in the secure field.
     ///   - text: A binding to the text value being edited.
     ///   - validation: The validation rules to apply to the secure field.
+    ///   - fieldID: Optional unique identifier for this field. Used with `FormValidationState` to identify the field when calling `error(for:)` or `isValid(for:)`. If not provided, defaults to `title`.
     ///   - form: Optional binding to a `FormValidationState` for form-level validation management. Use this for `.onSubmit` mode to call `validateAll()`.
     ///   - onValidationChange: Optional closure called when validation state changes. Receives `(isValid: Bool, errorMessage: String?)`.
     ///   - validationMode: When to perform validation. Defaults to the global configuration setting.
@@ -97,6 +99,7 @@ public struct ValidatedSecureField: View {
     ///     validation:
     ///         .required("Password is required")
     ///         .minLength(8, message: "Password must be at least 8 characters"),
+    ///     fieldID: "password",
     ///     onValidationChange: { isValid, errorMessage in
     ///         print("Password is valid: \(isValid)")
     ///     },
@@ -107,6 +110,7 @@ public struct ValidatedSecureField: View {
         _ title: String,
         text: Binding<String>,
         validation: Validation<String>,
+        fieldID: String? = nil,
         form: Binding<FormValidationState>? = nil,
         onValidationChange: ((Bool, String?) -> Void)? = nil,
         validationMode: ValidationMode? = nil,
@@ -114,6 +118,7 @@ public struct ValidatedSecureField: View {
         errorPosition: ErrorPosition? = nil
     ) {
         self.title = title
+        self.fieldID = fieldID ?? title
         self._text = text
         self.validation = validation
         self.form = form
@@ -130,6 +135,7 @@ public struct ValidatedSecureField: View {
                 errorMessage: $errorMessage,
                 isFocused: $isFocused,
                 title: title,
+                fieldID: fieldID,
                 validation: validation,
                 form: form,
                 onValidationChange: onValidationChange,

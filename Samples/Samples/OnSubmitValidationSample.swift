@@ -36,6 +36,7 @@ struct OnSubmitValidationSample: View {
                     validation:
                             .email()
                             .required(message: "Email is required"),
+                    fieldID: "email",
                     form: $form,
                     onValidationChange: { valid, errorMessage in
                         isEmailValid = valid
@@ -54,6 +55,7 @@ struct OnSubmitValidationSample: View {
                         .minLength(8, message: "Password must be at least 8 characters")
                         .containsUppercase(message: "Password must contain an uppercase letter")
                         .containsNumber(message: "Password must contain a number"),
+                    fieldID: "password",
                     form: $form,
                     onValidationChange: { valid, errorMessage in
                         isPasswordValid = valid
@@ -72,6 +74,7 @@ struct OnSubmitValidationSample: View {
                         .custom { confirm in
                             confirm == password ? .valid : .invalid("Passwords do not match")
                         },
+                    fieldID: "confirmPassword",
                     form: $form,
                     onValidationChange: { valid, errorMessage in
                         isConfirmPasswordValid = valid
@@ -105,19 +108,20 @@ struct OnSubmitValidationSample: View {
                         .foregroundColor(isFormValid ? .green : .red)
                 }
                 
-                let errors = [
-                    ("Email", emailError),
-                    ("Password", passwordError),
-                    ("Confirm Password", confirmPasswordError)
+                // Using form.error(for:) with fieldID
+                let formErrors = [
+                    ("Email", form.error(for: "email")),
+                    ("Password", form.error(for: "password")),
+                    ("Confirm Password", form.error(for: "confirmPassword"))
                 ].compactMap { field, error in
                     error.map { (field, $0) }
                 }
                 
-                if !errors.isEmpty {
+                if !formErrors.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Errors:")
+                        Text("Errors (from FormValidationState):")
                             .font(.headline)
-                        ForEach(errors, id: \.0) { field, error in
+                        ForEach(formErrors, id: \.0) { field, error in
                             HStack {
                                 Text("\(field):")
                                     .font(.caption)
@@ -127,6 +131,36 @@ struct OnSubmitValidationSample: View {
                                     .foregroundColor(.red)
                             }
                         }
+                    }
+                }
+                
+                // Also show individual field validity using form.isValid(for:)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Field Validity:")
+                        .font(.headline)
+                    HStack {
+                        Text("Email:")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text(form.isValid(for: "email") ? "Valid" : "Invalid")
+                            .font(.caption)
+                            .foregroundColor(form.isValid(for: "email") ? .green : .red)
+                    }
+                    HStack {
+                        Text("Password:")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text(form.isValid(for: "password") ? "Valid" : "Invalid")
+                            .font(.caption)
+                            .foregroundColor(form.isValid(for: "password") ? .green : .red)
+                    }
+                    HStack {
+                        Text("Confirm Password:")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text(form.isValid(for: "confirmPassword") ? "Valid" : "Invalid")
+                            .font(.caption)
+                            .foregroundColor(form.isValid(for: "confirmPassword") ? .green : .red)
                     }
                 }
             }

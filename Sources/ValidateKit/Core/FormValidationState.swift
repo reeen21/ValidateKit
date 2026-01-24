@@ -103,49 +103,67 @@ public final class FormValidationState {
     }
     
     /// Clears all errors and validation states for all fields.
-    func clearErrors() {
+    public func clearErrors() {
         errors.removeAll()
         fieldStates.removeAll()
     }
     
     /// Clears the error for a specific field and marks it as valid.
     ///
-    /// - Parameter field: The identifier of the field to clear.
-    func clearError(for field: String) {
-        errors.removeValue(forKey: field)
-        fieldStates[field] = true
+    /// - Parameter fieldID: The unique identifier of the field to clear. This should match the `fieldID` parameter passed to `ValidatedTextField` or `ValidatedSecureField`.
+    public func clearError(for fieldID: String) {
+        errors.removeValue(forKey: fieldID)
+        fieldStates[fieldID] = true
     }
     
     /// Returns the error message for a specific field, if any.
     ///
-    /// - Parameter field: The identifier of the field.
+    /// - Parameter fieldID: The unique identifier of the field. This should match the `fieldID` parameter passed to `ValidatedTextField` or `ValidatedSecureField`. If `fieldID` was not provided, use the field's `title` (placeholder text).
     /// - Returns: The error message string if the field has an error, `nil` otherwise.
     ///
     /// ## Example Usage
     ///
     /// ```swift
+    /// ValidatedTextField(
+    ///     "Email",
+    ///     text: $email,
+    ///     validation: .email().required(),
+    ///     fieldID: "email",
+    ///     form: $form
+    /// )
+    ///
+    /// // Later, retrieve the error using the fieldID
     /// if let error = form.error(for: "email") {
     ///     print("Email error: \(error)")
     /// }
     /// ```
-    public func error(for field: String) -> String? {
-        errors[field]
+    public func error(for fieldID: String) -> String? {
+        errors[fieldID]
     }
     
     /// Returns whether a specific field is valid.
     ///
-    /// - Parameter field: The identifier of the field.
+    /// - Parameter fieldID: The unique identifier of the field. This should match the `fieldID` parameter passed to `ValidatedTextField` or `ValidatedSecureField`. If `fieldID` was not provided, use the field's `title` (placeholder text).
     /// - Returns: `true` if the field is valid or has no validation state, `false` if it has errors.
     ///
     /// ## Example Usage
     ///
     /// ```swift
+    /// ValidatedTextField(
+    ///     "Email",
+    ///     text: $email,
+    ///     validation: .email().required(),
+    ///     fieldID: "email",
+    ///     form: $form
+    /// )
+    ///
+    /// // Later, check validity using the fieldID
     /// if form.isValid(for: "email") {
     ///     print("Email is valid")
     /// }
     /// ```
-    public func isValid(for field: String) -> Bool {
-        fieldStates[field] ?? true
+    public func isValid(for fieldID: String) -> Bool {
+        fieldStates[fieldID] ?? true
     }
     
     /// Registers a validation function for a field.
