@@ -118,8 +118,8 @@ public struct ValidatedSecureField: View {
         self.validation = validation
         self.form = form
         self.onValidationChange = onValidationChange
-        self.validationMode = validationMode ?? FormValidationConfiguration.shared.defaultValidationMode
-        let defaultInterval = debounceInterval ?? FormValidationConfiguration.shared.defaultDebounceInterval
+        self.validationMode = validationMode ?? FormValidationConfiguration.defaultValidationMode
+        let defaultInterval = debounceInterval ?? FormValidationConfiguration.defaultDebounceInterval
         self.debounceInterval = max(0, defaultInterval)
         self.errorPosition = errorPosition
     }

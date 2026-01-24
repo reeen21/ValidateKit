@@ -90,36 +90,30 @@ public enum ErrorPosition {
 
 /// Global configuration for form validation behavior.
 ///
-/// Use `FormValidationConfiguration.shared` to customize default validation settings
+/// Use static properties to customize default validation settings
 /// that apply to all validated fields in your application.
 ///
 /// ## Example Usage
 ///
 /// ```swift
 /// // Configure global defaults
-/// FormValidationConfiguration.shared.defaultValidationMode = .onBlur
-/// FormValidationConfiguration.shared.defaultDebounceInterval = 0.5
-/// FormValidationConfiguration.shared.errorMessagePosition = .below
+/// FormValidationConfiguration.defaultValidationMode = .onBlur
+/// FormValidationConfiguration.defaultDebounceInterval = 0.5
+/// FormValidationConfiguration.errorMessagePosition = .below
 /// ```
-@Observable
 @MainActor
-public final class FormValidationConfiguration {
-    /// The shared configuration instance.
-    ///
-    /// Modify properties on this instance to change global validation defaults.
-    public static let shared = FormValidationConfiguration()
-    
+public enum FormValidationConfiguration {
     /// The default error message position.
     ///
     /// This value is used when `errorPosition` is not explicitly provided to `ValidatedTextField`
     /// or `ValidatedSecureField`. Defaults to `.below`.
-    public var errorMessagePosition: ErrorPosition = .below
+    public static var errorMessagePosition: ErrorPosition = .below
     
     /// The default validation mode.
     ///
     /// This value is used when `validationMode` is not explicitly provided to `ValidatedTextField`
     /// or `ValidatedSecureField`. Defaults to `.onBlur`.
-    public var defaultValidationMode: ValidationMode = .onBlur
+    public static var defaultValidationMode: ValidationMode = .onBlur
     
     /// The default debounce interval in seconds.
     ///
@@ -128,13 +122,5 @@ public final class FormValidationConfiguration {
     ///
     /// The debounce interval only applies when `validationMode` is `.onChange`.
     /// The value must be greater than or equal to 0. Negative values will be clamped to 0.
-    public var defaultDebounceInterval: TimeInterval = 0.3 {
-        didSet {
-            if defaultDebounceInterval < 0 {
-                defaultDebounceInterval = 0
-            }
-        }
-    }
-    
-    private init() {}
+    public static var defaultDebounceInterval: TimeInterval = 0.3
 }
