@@ -334,9 +334,6 @@ FormValidationConfiguration.shared.defaultValidationMode = .onBlur
 
 // Set default debounce interval (for onChange mode)
 FormValidationConfiguration.shared.defaultDebounceInterval = 0.5
-
-// Set default error position
-FormValidationConfiguration.shared.errorMessagePosition = .below
 ```
 
 ## Form Validation State
