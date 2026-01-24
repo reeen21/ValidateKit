@@ -159,6 +159,9 @@ extension Validation where Value == String {
     /// Validates that a string is not empty (after trimming whitespace).
     ///
     /// This instance method allows chaining from other validation methods.
+    /// When `required()` is called on an existing validation chain, it takes priority:
+    /// if the value is empty, the required error message is returned instead of
+    /// other validation errors.
     ///
     /// - Parameter message: The error message to display if validation fails. Defaults to "This field is required".
     /// - Returns: A validation rule that checks for required input.
@@ -168,9 +171,19 @@ extension Validation where Value == String {
     /// ```swift
     /// let validation = Validation<String>.email()
     ///     .required("Email is required")
+    /// // Empty string will show "Email is required" instead of "Invalid email format"
     /// ```
     public func required(message: String = "This field is required") -> Validation<String> {
-        self.and(ValidationRule.required(message: message))
+        let requiredValidation = ValidationRule.required(message: message)
+        return Validation { value in
+            // Check required first - if empty, return required error immediately
+            let requiredResult = requiredValidation.validate(value)
+            guard requiredResult.isValid else {
+                return requiredResult
+            }
+            // If not empty, run the existing validation chain
+            return self.validate(value)
+        }
     }
     
     /// Validates that a string has a minimum length.
