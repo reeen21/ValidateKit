@@ -83,7 +83,7 @@ import UIKit
 ///                 "Email",
 ///                 text: $email,
 ///                 validation: ValidationRule.email().required(),
-///                 form: $form,
+///                 form: form,
 ///                 validationMode: .onSubmit
 ///             )
 ///
@@ -93,7 +93,7 @@ import UIKit
 ///                 validation: ValidationRule
 ///                     .required("Password is required")
 ///                     .minLength(8, message: "Password must be at least 8 characters"),
-///                 form: $form,
+///                 form: form,
 ///                 validationMode: .onSubmit
 ///             )
 ///
@@ -115,7 +115,7 @@ public struct ValidationTextField: View {
     private let title: String
     private let fieldID: String
     private let validation: Validation<String>
-    private let form: Binding<FormValidationState>?
+    private let form: FormValidationState?
     private let onValidationChange: ((Bool, String?) -> Void)?
     private let validationMode: ValidationMode
     private let debounceInterval: TimeInterval
@@ -159,7 +159,7 @@ public struct ValidationTextField: View {
         text: Binding<String>,
         validation: Validation<String>,
         fieldID: String? = nil,
-        form: Binding<FormValidationState>? = nil,
+        form: FormValidationState? = nil,
         onValidationChange: ((Bool, String?) -> Void)? = nil,
         validationMode: ValidationMode? = nil,
         debounceInterval: TimeInterval? = nil,

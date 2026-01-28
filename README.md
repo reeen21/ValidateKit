@@ -83,7 +83,7 @@ struct RegistrationForm: View {
                 "Email",
                 text: $email,
                 validation: ValidationRule.email().required(),
-                form: $form
+                form: form
             )
             
             ValidationSecureField(
@@ -94,7 +94,7 @@ struct RegistrationForm: View {
                     .minLength(8, message: "Password must be at least 8 characters")
                     .containsUppercase(message: "Password must contain an uppercase letter")
                     .containsNumber(message: "Password must contain a number"),
-                form: $form
+                form: form
             )
             
             ValidationSecureField(
@@ -105,7 +105,7 @@ struct RegistrationForm: View {
                     .custom { [password] confirm in
                         confirm == password ? .valid : .invalid("Passwords do not match")
                     },
-                form: $form
+                form: form
             )
             
             Button("Submit") {
@@ -349,7 +349,7 @@ ValidationTextField(
     text: $email,
     validation: .email().required(),
     fieldID: "email",  // Unique identifier
-    form: $form
+    form: form
 )
 
 // Check if entire form is valid
@@ -384,7 +384,7 @@ ValidationTextField(
     text: $email,
     validation: .email().required(),
     fieldID: "email",  // Unique identifier
-    form: $form
+    form: form
 )
 
 ValidationTextField(
@@ -392,7 +392,7 @@ ValidationTextField(
     text: $password,
     validation: .required(),
     fieldID: "password",  // Unique identifier
-    form: $form
+    form: form
 )
 
 // Later, retrieve errors using fieldID

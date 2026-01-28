@@ -10,7 +10,7 @@ struct ValidationFieldView<Content: View>: View {
     let title: String
     let fieldID: String
     let validation: Validation<String>
-    let form: Binding<FormValidationState>?
+    let form: FormValidationState?
     @State private var internalForm: FormValidationState?
     let onValidationChange: ((Bool, String?) -> Void)?
     let validationMode: ValidationMode
@@ -26,7 +26,7 @@ struct ValidationFieldView<Content: View>: View {
         title: String,
         fieldID: String,
         validation: Validation<String>,
-        form: Binding<FormValidationState>?,
+        form: FormValidationState?,
         onValidationChange: ((Bool, String?) -> Void)?,
         validationMode: ValidationMode,
         debounceInterval: TimeInterval,
@@ -52,7 +52,7 @@ struct ValidationFieldView<Content: View>: View {
     }
     
     private var formState: FormValidationState? {
-        form?.wrappedValue ?? internalForm
+        form ?? internalForm
     }
     
     private var helper: ValidationFieldHelper {

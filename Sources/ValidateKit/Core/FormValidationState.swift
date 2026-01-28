@@ -18,7 +18,7 @@ import Observation
 ///             "Email",
 ///             text: $email,
 ///             validation: .email().required(),
-///             form: $form
+///             form: form
 ///         )
 ///
 ///         Button("Submit") {
@@ -129,7 +129,7 @@ public final class FormValidationState {
     ///     text: $email,
     ///     validation: .email().required(),
     ///     fieldID: "email",
-    ///     form: $form
+    ///     form: form
     /// )
     ///
     /// // Later, retrieve the error using the fieldID
@@ -154,7 +154,7 @@ public final class FormValidationState {
     ///     text: $email,
     ///     validation: .email().required(),
     ///     fieldID: "email",
-    ///     form: $form
+    ///     form: form
     /// )
     ///
     /// // Later, check validity using the fieldID
@@ -208,7 +208,7 @@ public final class FormValidationState {
 ///                 "Email",
 ///                 text: $email,
 ///                 validation: .email().required(),
-///                 form: $form,
+///                 form: form,
 ///                 validationMode: .onSubmit
 ///             )
 ///
@@ -216,7 +216,7 @@ public final class FormValidationState {
 ///                 "Password",
 ///                 text: $password,
 ///                 validation: .required(),
-///                 form: $form,
+///                 form: form,
 ///                 validationMode: .onSubmit
 ///             )
     ///

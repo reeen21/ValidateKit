@@ -25,7 +25,7 @@ struct FieldIDSample: View {
                     text: $primaryEmail,
                     validation: .email().required(message: "Primary email is required"),
                     fieldID: "primaryEmail",  // Unique identifier
-                    form: $form,
+                    form: form,
                     validationMode: .onBlur
                 )
             }
@@ -36,7 +36,7 @@ struct FieldIDSample: View {
                     text: $secondaryEmail,
                     validation: .email().required(message: "Secondary email is required"),
                     fieldID: "secondaryEmail",  // Unique identifier
-                    form: $form,
+                    form: form,
                     validationMode: .onBlur
                 )
             }

@@ -69,7 +69,7 @@ public struct ValidationSecureField: View {
     private let title: String
     private let fieldID: String
     private let validation: Validation<String>
-    private let form: Binding<FormValidationState>?
+    private let form: FormValidationState?
     private let onValidationChange: ((Bool, String?) -> Void)?
     private let validationMode: ValidationMode
     private let debounceInterval: TimeInterval
@@ -111,7 +111,7 @@ public struct ValidationSecureField: View {
         text: Binding<String>,
         validation: Validation<String>,
         fieldID: String? = nil,
-        form: Binding<FormValidationState>? = nil,
+        form: FormValidationState? = nil,
         onValidationChange: ((Bool, String?) -> Void)? = nil,
         validationMode: ValidationMode? = nil,
         debounceInterval: TimeInterval? = nil,

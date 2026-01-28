@@ -37,7 +37,7 @@ struct OnSubmitValidationSample: View {
                             .email()
                             .required(message: "Email is required"),
                     fieldID: "email",
-                    form: $form,
+                    form: form,
                     onValidationChange: { valid, errorMessage in
                         isEmailValid = valid
                         emailError = errorMessage
@@ -56,7 +56,7 @@ struct OnSubmitValidationSample: View {
                         .containsUppercase(message: "Password must contain an uppercase letter")
                         .containsNumber(message: "Password must contain a number"),
                     fieldID: "password",
-                    form: $form,
+                    form: form,
                     onValidationChange: { valid, errorMessage in
                         isPasswordValid = valid
                         passwordError = errorMessage
@@ -75,7 +75,7 @@ struct OnSubmitValidationSample: View {
                             confirm == password ? .valid : .invalid("Passwords do not match")
                         },
                     fieldID: "confirmPassword",
-                    form: $form,
+                    form: form,
                     onValidationChange: { valid, errorMessage in
                         isConfirmPasswordValid = valid
                         confirmPasswordError = errorMessage
