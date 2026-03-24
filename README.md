@@ -1,3 +1,4 @@
+![](https://img.shields.io/badge/Status-Not_ready_for_production-red)
 # ValidateKit
 
 A powerful and flexible SwiftUI validation library for iOS 17+ that provides declarative validation rules, real-time validation feedback, and form-level validation state management.
